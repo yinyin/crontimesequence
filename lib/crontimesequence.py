@@ -142,8 +142,7 @@ class NearestWorkDayValue(CronRule):
 		if (6 == d_wd) or (7 == d_wd):
 			result = False
 		elif (1 == d_wd):
-			if (self.exp_workday == (d.day - 1)) or
-					( (1 == self.exp_workday) and (3 == d.day) ):
+			if (self.exp_workday == (d.day - 1)) or ( (1 == self.exp_workday) and (3 == d.day) ):
 				result = True
 		elif (5 == d_wd):
 			if (self.exp_workday == (d.day + 1)):
