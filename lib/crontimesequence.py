@@ -72,12 +72,8 @@ class LastDayOfMonthValue(CronRule):
 
 		aux = d + datetime.timedelta(days=1)
 		
-		if 12 == d.month:
-			if 1 == aux.month:
-				return True
-		else:
-			if (1 + d.month) == aux.month:
-				return True
+		if 1 == aux.day:
+			return True
 		
 		return False
 	# ### def is_accept

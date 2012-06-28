@@ -78,7 +78,12 @@ class TestLastDayOfMonthValue(unittest.TestCase):
 		while test_boundary > test_subj:
 			tomorrow = test_subj + delta_1_day
 			ret = test_rule_obj.is_accept(test_subj)
-			if 1 == tomorrow.day:
+			
+			is_last_month = False
+			if ((12 == test_subj.month) and (1 == tomorrow.month)) or (((1 + test_subj.month) == tomorrow.month) and (tomorrow.month <= 12)):
+				is_last_month = True
+			
+			if is_last_month:
 				self.assertTrue(ret)
 			else:
 				self.assertFalse(ret)
