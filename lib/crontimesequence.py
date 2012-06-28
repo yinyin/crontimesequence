@@ -4,6 +4,7 @@
 """ build time sequence with cron syntax """
 
 import re
+import datetime
 
 
 class CronRule(object):
