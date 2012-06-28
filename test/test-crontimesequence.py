@@ -62,6 +62,33 @@ class TestScalarValue(unittest.TestCase):
 # ### class TestScalarValue
 
 
+class TestLastDayOfMonthValue(unittest.TestCase):
+	""" test ScalarValue class """
+	
+	def test_1999_2022_5927sec_step(self):
+		""" exams every 5927sec step to check if LastDayOfMonthValue work correctly """
+		
+		test_rule_obj = crontimesequence.LastDayOfMonthValue()
+		
+		test_subj = datetime.datetime(1999, 1, 1, 0, 0, 0)
+		test_boundary = datetime.datetime(2022, 1, 1, 0, 0, 0)
+		delta_1_day = datetime.timedelta(days=1)
+		eval_step = datetime.timedelta(seconds=5927)
+		
+		while test_boundary > test_subj:
+			tomorrow = test_subj + delta_1_day
+			ret = test_rule_obj.is_accept(test_subj)
+			if 1 == tomorrow.day:
+				self.assertTrue(ret)
+			else:
+				self.assertFalse(ret)
+			
+			test_subj = test_subj + eval_step
+	# ### def test_1999_2022_30sec_step
+# ### class TestLastDayOfMonthValue
+
+
+
 if __name__ == '__main__':
 	unittest.main()
 
