@@ -81,32 +81,6 @@ class LastDayOfMonthValue(CronRule):
 
 _cached_last_day_of_month = LastDayOfMonthValue()
 
-class LastWeekdayOfMonthValue(CronRule):
-	def __init__(self, v):
-		""" constructor of last week day of month check rule.
-		"""
-		self.exp_weekday = int(v)
-		if 0 == self.exp_weekday:
-			self.exp_weekday = 7
-	# ### def __init__
-
-	def is_accept(self, d):
-		""" test is the given datetime object d complied with the rule set in this object.
-
-		Argument:
-			d - the datetime object to check
-		Return:
-			True if given object is complied, False otherwise.
-		"""
-
-		if d.isoweekday() == self.exp_weekday:
-			aux = d + datetime.timedelta(days=7)
-			if aux.month != d.month:
-				return True
-		
-		return False
-	# ### def is_accept
-# ### class LastWeekdayOfMonthValue
 
 class NearestWorkDayValue(CronRule):
 	def __init__(self, v):
