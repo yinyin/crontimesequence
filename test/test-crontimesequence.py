@@ -96,7 +96,8 @@ class TestLastDayOfMonthValue(unittest.TestCase):
 class TestNearestWorkDayValue(unittest.TestCase):
 	""" test NearestWorkDayValue class """
 	
-	def test_nearest_workday_2012(self):
+	def test_nearest_workday_2012_sampled(self):
+		""" exam with selected 2012 dates """
 		
 		eval_step = datetime.timedelta(seconds=5927)
 		delta_7_day = datetime.timedelta(days=7)
@@ -121,9 +122,7 @@ class TestNearestWorkDayValue(unittest.TestCase):
 					self.assertFalse(ret, msg)
 				
 				eval_rolling = eval_rolling + eval_step
-			
-			
-		
+	# ### def test_nearest_workday_2012_sampled
 # ### class TestNearestWorkDayValue
 
 
