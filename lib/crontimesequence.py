@@ -112,16 +112,19 @@ class NearestWorkDayValue(CronRule):
 		result = False
 		if (6 == d_wd) or (7 == d_wd):
 			result = False
-		elif (1 == d_wd):
-			if (self.exp_workday == (d.day - 1)) or ( (1 == self.exp_workday) and (3 == d.day) ):
+		else:
+			if self.exp_workday == d.day:
 				result = True
-		elif (5 == d_wd):
-			if (self.exp_workday == (d.day + 1)):
-				result = True
-			else:
-				aux = d + datetime.timedelta(days=3)
-				if (self.exp_workday == (d.day + 2)) and (1 == aux.day):
+			elif (1 == d_wd):
+				if (self.exp_workday == (d.day - 1)) or ( (1 == self.exp_workday) and (3 == d.day) ):
 					result = True
+			elif (5 == d_wd):
+				if (self.exp_workday == (d.day + 1)):
+					result = True
+				else:
+					aux = d + datetime.timedelta(days=3)
+					if (self.exp_workday == (d.day + 2)) and (1 == aux.day):
+						result = True
 		
 		if result:
 			self.__cached_accept_date = d_date
