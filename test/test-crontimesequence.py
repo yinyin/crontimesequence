@@ -14,7 +14,7 @@ import crontimesequence
 class TestScalarValue(unittest.TestCase):
 	""" test ScalarValue class """
 	
-	def test_minute_hour_day_month(self):
+	def test_minute_hour_day_month_2012(self):
 		""" check if minute, hour, day and month -check of ScalarValue rule class is correct """
 		
 		test_values = {"minute": 16, "hour": 23, "day": 9, "month": 3}
@@ -39,7 +39,7 @@ class TestScalarValue(unittest.TestCase):
 								self.assertFalse(ret)
 	# ### def test_minute_hour_day_month
 	
-	def test_weekday(self):
+	def test_weekday_2012(self):
 		""" check if weekday check of ScalarValue rule class is correct """
 		
 		test_rule_set = [crontimesequence.ScalarValue(wdv, "weekday") for wdv in range(0, 8)]
@@ -63,7 +63,7 @@ class TestScalarValue(unittest.TestCase):
 
 
 class TestLastDayOfMonthValue(unittest.TestCase):
-	""" test ScalarValue class """
+	""" test LastDayOfMonthValue class """
 	
 	def test_1999_2022_5927sec_step(self):
 		""" exams every 5927sec step to check if LastDayOfMonthValue work correctly """
@@ -91,6 +91,40 @@ class TestLastDayOfMonthValue(unittest.TestCase):
 			test_subj = test_subj + eval_step
 	# ### def test_1999_2022_30sec_step
 # ### class TestLastDayOfMonthValue
+
+
+class TestNearestWorkDayValue(unittest.TestCase):
+	""" test NearestWorkDayValue class """
+	
+	def test_nearest_workday_2012(self):
+		
+		eval_step = datetime.timedelta(seconds=5927)
+		delta_7_day = datetime.timedelta(days=7)
+		
+		egde_sample = [(1, 1, 2,), (5, 16, 16), (7, 15, 16,), (7, 19, 19), (7, 28, 27), (9, 1, 3,), (9, 30, 28,), (12, 1, 3,), (12, 31, 31,),]
+		
+		for e in egde_sample:
+			month, day_subject, day_positive, = e
+			rule_obj = crontimesequence.NearestWorkDayValue(day_subject)
+			
+			eval_subj_date = datetime.datetime(2012, month, day_subject, 1, 30, 0)
+			eval_rolling = eval_subj_date - delta_7_day
+			eval_end_date = eval_subj_date + delta_7_day
+			
+			while eval_rolling < eval_end_date:
+				ret = rule_obj.is_accept(eval_rolling)
+				
+				msg = "%r => %r" % (e, eval_rolling,)
+				if day_positive == eval_rolling.day:
+					self.assertTrue(ret, msg)
+				else:
+					self.assertFalse(ret, msg)
+				
+				eval_rolling = eval_rolling + eval_step
+			
+			
+		
+# ### class TestNearestWorkDayValue
 
 
 
