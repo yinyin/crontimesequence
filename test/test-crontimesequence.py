@@ -126,6 +126,48 @@ class TestNearestWorkDayValue(unittest.TestCase):
 # ### class TestNearestWorkDayValue
 
 
+class TestLastWeekdayOfMonthValue(unittest.TestCase):
+	""" test LastWeekdayOfMonthValue class """
+	
+	def test_last_weekday_2011_2012_2013(self):
+		""" check if every weekday value can work correctly """
+		
+		eval_step = datetime.timedelta(seconds=5927)
+		
+		for expweekday in range(0, 8):
+			rule_obj = crontimesequence.LastWeekdayOfMonthValue(expweekday)
+			
+			eval_rolling = datetime.datetime(2014, 1, 1, 1, 30, 0)
+			eval_end_date = datetime.datetime(2010, 12, 31, 1, 30, 0)
+			
+			current_month = 1
+			last_wd_date_of_current_month = datetime.date(2014, 1, 26)
+			
+			while eval_rolling > eval_end_date:
+				
+				if eval_rolling.month != current_month:
+					current_month = eval_rolling.month
+					last_wd_date_of_current_month = None
+				
+				rolling_wd = eval_rolling.isoweekday()
+				rolling_date = eval_rolling.date()
+				
+				if (last_wd_date_of_current_month is None) and ( (expweekday == rolling_wd) or ((7 == rolling_wd) and (0 == expweekday)) ):
+					last_wd_date_of_current_month = rolling_date
+				
+				ret = rule_obj.is_accept(eval_rolling)
+				
+				msg = "expweekday = %d, rolling = %r" % (expweekday, eval_rolling,)
+				if rolling_date == last_wd_date_of_current_month:
+					self.assertTrue(ret, msg)
+				else:
+					self.assertFalse(ret, msg)
+				
+				eval_rolling = eval_rolling - eval_step
+	# ### def test_last_weekday_2011_2012_2013
+# ### class TestLastWeekdayOfMonthValue
+
+
 
 if __name__ == '__main__':
 	unittest.main()
