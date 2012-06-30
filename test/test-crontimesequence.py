@@ -258,13 +258,14 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 	# ### def test_count_simple_star
 	
 	def test_count_simple_range(self):
-		""" check if the generated rule set of "*" have correct rule items """
+		""" check if the generated rule set of "X-Y" have correct rule items """
 		
-		ruleset = crontimesequence.parse_cronstring_minute("*")
-		self.assertEqual(len(ruleset), 60)
+		ruleset = crontimesequence.parse_cronstring_minute("20-59")
+		self.assertEqual(len(ruleset), 40)
 		
-		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
-	# ### def test_count_simple_star
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(20, 60)], True)
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 20)], False)
+	# ### def test_count_simple_range
 # ### class Test_parse_cronstring_minute
 
 
