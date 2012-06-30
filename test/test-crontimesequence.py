@@ -214,6 +214,18 @@ class TestNthWeekdayOfMonthValue(unittest.TestCase):
 
 
 
+class Test_parse_cronstring_minute(unittest.TestCase):
+	""" test the parse_cronstring_minute function """
+	
+	def test_count_simple_star(self):
+		""" check if the generated rule set of "*" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_minute("*")
+		self.assertEqual(len(ruleset), 60)
+	# ### def test_count_simple_star
+# ### class Test_parse_cronstring_minute
+
+
 if __name__ == '__main__':
 	unittest.main()
 
