@@ -290,6 +290,25 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(20, 60)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 20)], False)
 	# ### def test_count_simple_range
+	
+	def test_count_simple_comma(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_minute("3,7,11,36,57,59")
+		self.assertEqual(len(ruleset), 6)
+		
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(0, 60):
+			d = datetime.datetime(2012, 6, 30, 8, i)
+			if i in (3, 7, 11, 36, 57, 59,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+		
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_count_simple_comma
 # ### class Test_parse_cronstring_minute
 
 
