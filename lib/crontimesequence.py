@@ -52,6 +52,10 @@ class ScalarValue(CronRule):
 
 		return True
 	# ### def is_accept
+
+	def __repr__(self):
+		return "%s.ScalarValue(%d, %r)" % (self.__module__, self.v, self.fieldname,)
+	# ### def __repr__
 # ### class ScalarValue
 
 class LastDayOfMonthValue(CronRule):
@@ -77,6 +81,10 @@ class LastDayOfMonthValue(CronRule):
 		
 		return False
 	# ### def is_accept
+
+	def __repr__(self):
+		return "%s.LastDayOfMonthValue()" % (self.__module__,)
+	# ### def __repr__
 # ### class LastDayOfMonthValue
 
 _cached_last_day_of_month = LastDayOfMonthValue()
@@ -132,6 +140,10 @@ class NearestWorkDayValue(CronRule):
 			self.__cached_reject_date = d_date
 		return result
 	# ### def is_accept
+
+	def __repr__(self):
+		return "%s.NearestWorkDayValue(%d)" % (self.__module__, self.exp_workday,)
+	# ### def __repr__
 # ### class NearestWorkDayValue
 
 class LastWeekdayOfMonthValue(CronRule):
@@ -159,6 +171,10 @@ class LastWeekdayOfMonthValue(CronRule):
 		
 		return False
 	# ### def is_accept
+
+	def __repr__(self):
+		return "%s.LastWeekdayOfMonthValue(%d)" % (self.__module__, self.exp_weekday,)
+	# ### def __repr__
 # ### class LastWeekdayOfMonthValue
 
 class NthWeekdayOfMonthValue(CronRule):
@@ -188,13 +204,19 @@ class NthWeekdayOfMonthValue(CronRule):
 		
 		return False
 	# ### def is_accept
+
+	def __repr__(self):
+		return "%s.NthWeekdayOfMonthValue(%d, %d)" % (self.__module__, self.exp_weekday, self.exp_nth,)
+	# ### def __repr__
 # ### class NthWeekdayOfMonthValue
 
 
 
 
 def _parse_cronstring_common(v, subparser):
-	if ',' in v:
+	if not (isinstance(v, str) or isinstance(v, unicode)):
+		return None
+	elif ',' in v:
 		vseq = v.split(',')
 		result = []
 		for ele in vseq:
