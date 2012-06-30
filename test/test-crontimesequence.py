@@ -63,7 +63,7 @@ class TestScalarValue(unittest.TestCase):
 	def test_repr_method_work(self):
 		ruleobj = crontimesequence.ScalarValue(1, "weekday")
 		r = repr(ruleobj)
-		self.assertFalse(r is None)
+		self.assertEqual(r, '')
 	# ### def test_repr_method_work
 # ### class TestScalarValue
 
@@ -96,6 +96,12 @@ class TestLastDayOfMonthValue(unittest.TestCase):
 			
 			test_subj = test_subj + eval_step
 	# ### def test_1999_2022_30sec_step
+
+	def test_repr_method_work(self):
+		ruleobj = crontimesequence.LastDayOfMonthValue()
+		r = repr(ruleobj)
+		self.assertEqual(r, '')
+	# ### def test_repr_method_work
 # ### class TestLastDayOfMonthValue
 
 
@@ -129,6 +135,12 @@ class TestNearestWorkDayValue(unittest.TestCase):
 				
 				eval_rolling = eval_rolling + eval_step
 	# ### def test_nearest_workday_2012_sampled
+
+	def test_repr_method_work(self):
+		ruleobj = crontimesequence.NearestWorkDayValue(3)
+		r = repr(ruleobj)
+		self.assertEqual(r, '')
+	# ### def test_repr_method_work
 # ### class TestNearestWorkDayValue
 
 
@@ -171,6 +183,12 @@ class TestLastWeekdayOfMonthValue(unittest.TestCase):
 				
 				eval_rolling = eval_rolling - eval_step
 	# ### def test_last_weekday_2011_2012_2013
+
+	def test_repr_method_work(self):
+		ruleobj = crontimesequence.LastWeekdayOfMonthValue(3)
+		r = repr(ruleobj)
+		self.assertEqual(r, '')
+	# ### def test_repr_method_work
 # ### class TestLastWeekdayOfMonthValue
 
 
@@ -216,6 +234,12 @@ class TestNthWeekdayOfMonthValue(unittest.TestCase):
 				
 					eval_rolling = eval_rolling + eval_step
 	# ### def test_nth_weekday_2011_2012_2013
+
+	def test_repr_method_work(self):
+		ruleobj = crontimesequence.NthWeekdayOfMonthValue(3, 2)
+		r = repr(ruleobj)
+		self.assertEqual(r, '')
+	# ### def test_repr_method_work
 # ### class TestNthWeekdayOfMonthValue
 
 
