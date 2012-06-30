@@ -59,6 +59,12 @@ class TestScalarValue(unittest.TestCase):
 							else:
 								self.assertFalse(ret)
 	# ### def test_weekday
+	
+	def test_repr_method_work(self):
+		ruleobj = crontimesequence.ScalarValue(1, "weekday")
+		r = repr(ruleobj)
+		self.assertFalse(r is None)
+	# ### def test_repr_method_work
 # ### class TestScalarValue
 
 
@@ -214,6 +220,31 @@ class TestNthWeekdayOfMonthValue(unittest.TestCase):
 
 
 
+def is_rule_dateset_compatible(testcase, ruleset, dateset, expret, msg=None):
+	""" check if every date in dataset can have expected acceptable test result with given rule object
+	
+	Argument:
+		testcase - testcase
+		ruleset - list of rule objects
+		dateset - list of dates
+		expret - expected return value (T/F) from is_accept() method of rule object
+	"""
+	
+	
+	for d in dateset:
+		final_ret = False
+		for rule in ruleset:
+			if rule.is_accept(d):
+				final_ret = True
+		
+		if msg is None:
+			fmsg = "%r vs. %r" % (rule, d,)
+		else:
+			fmsg = "%r (%r vs. %r)" % (msg, rule, d,)
+		testcase.assertEqual(expret, final_ret, fmsg)
+# ### def is_rule_dateset_compatible
+
+
 class Test_parse_cronstring_minute(unittest.TestCase):
 	""" test the parse_cronstring_minute function """
 	
@@ -222,6 +253,17 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		
 		ruleset = crontimesequence.parse_cronstring_minute("*")
 		self.assertEqual(len(ruleset), 60)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
+	# ### def test_count_simple_star
+	
+	def test_count_simple_range(self):
+		""" check if the generated rule set of "*" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_minute("*")
+		self.assertEqual(len(ruleset), 60)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
 	# ### def test_count_simple_star
 # ### class Test_parse_cronstring_minute
 
