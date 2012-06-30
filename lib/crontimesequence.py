@@ -54,7 +54,7 @@ class ScalarValue(CronRule):
 	# ### def is_accept
 
 	def __repr__(self):
-		return "%s.ScalarValue(%d, %r)" % (self.__module__, self.v, self.fieldname,)
+		return "%s.ScalarValue(%d, \"%s\")" % (self.__module__, self.v, self.fieldname,)
 	# ### def __repr__
 # ### class ScalarValue
 
