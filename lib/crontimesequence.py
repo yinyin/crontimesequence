@@ -227,9 +227,9 @@ def _parse_cronstring_common(v, subparser):
 		vseq = subparser( parted[0].strip() )
 		try:
 			vstep = int(parted[1].strip())
-			return [vseq[idx] for idx in range(len(vseq), step=vstep)]
-		except:
-			print "Syntax Err: cannot parse step value to integer (token=%r)" % (v,)
+			return [vseq[idx] for idx in range(0, len(vseq), vstep)]
+		except Exception as e:
+			print "Syntax Err: cannot parse step value to integer (token=%r>%r, e=%r)" % (v, parted, e,)
 			return vseq
 	elif '-' in v:
 		parted = v.split('-')
