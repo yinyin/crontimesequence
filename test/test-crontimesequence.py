@@ -272,16 +272,16 @@ def is_rule_dateset_compatible(testcase, ruleset, dateset, expret, msg=None):
 class Test_parse_cronstring_minute(unittest.TestCase):
 	""" test the parse_cronstring_minute function """
 	
-	def test_count_simple_star(self):
+	def test_star(self):
 		""" check if the generated rule set of "*" have correct rule items """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("*")
 		self.assertEqual(len(ruleset), 60)
 		
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
-	# ### def test_count_simple_star
+	# ### def test_star
 	
-	def test_count_simple_range(self):
+	def test_range(self):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("20-59")
@@ -289,9 +289,9 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(20, 60)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 20)], False)
-	# ### def test_count_simple_range
+	# ### def test_range
 	
-	def test_count_simple_divide_1(self):
+	def test_divide_1(self):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("*/17")
@@ -308,9 +308,9 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
-	# ### def test_count_simple_divide_1
+	# ### def test_divide_1
 	
-	def test_count_simple_divide_2(self):
+	def test_divide_2(self):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("20-59/3")
@@ -327,9 +327,9 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
-	# ### def test_count_simple_divide_2
+	# ### def test_divide_2
 	
-	def test_count_simple_comma(self):
+	def test_comma(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("3,7,11,36,57,59")
@@ -346,7 +346,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
-	# ### def test_count_simple_comma
+	# ### def test_comma
 # ### class Test_parse_cronstring_minute
 
 
