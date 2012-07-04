@@ -281,7 +281,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
 	# ### def test_star
 	
-	def test_range(self):
+	def test_range_1(self):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 		
 		ruleset = crontimesequence.parse_cronstring_minute("20-59")
@@ -289,7 +289,21 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(20, 60)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 20)], False)
-	# ### def test_range
+	# ### def test_range_1
+	
+	def test_range_2(self):
+		""" check if the generated rule set of "X-" is ignored correctly """
+		
+		ruleset = crontimesequence.parse_cronstring_minute("20-")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_2
+	
+	def test_range_3(self):
+		""" check if the generated rule set of "-Y" is ignored correctly """
+		
+		ruleset = crontimesequence.parse_cronstring_minute("-50")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_3
 	
 	def test_divide_1(self):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
