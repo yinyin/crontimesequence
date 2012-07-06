@@ -659,6 +659,227 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 # ### class Test_parse_cronstring_hour
 
 
+class Test_parse_cronstring_day(unittest.TestCase):
+	""" test the parse_cronstring_day function """
+	
+	def test_star(self):
+		""" check if the generated rule set of "*" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_day("*")
+		self.assertEqual(len(ruleset), 31)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# ### def test_star
+	
+	def test_range_1(self):
+		""" check if the generated rule set of "X-Y" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_day("6-31")
+		self.assertEqual(len(ruleset), 26)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(6, 32)], True)
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 6)], False)
+	# ### def test_range_1
+	
+	def test_range_2(self):
+		""" check if the generated rule set of "X-" is ignored correctly """
+		
+		ruleset = crontimesequence.parse_cronstring_day("3-")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_2
+	
+	def test_range_3(self):
+		""" check if the generated rule set of "-Y" is ignored correctly """
+		
+		ruleset = crontimesequence.parse_cronstring_day("-20")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_3
+	
+	def test_divide_1(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
+		
+		ruleset = crontimesequence.parse_cronstring_day("*/5")
+		self.assertEqual(len(ruleset), 7)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			step = i
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			if 0 == ((step-1) % 5):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_divide_1
+	
+	def test_divide_2(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
+		
+		ruleset = crontimesequence.parse_cronstring_day("3-19/3")
+		self.assertEqual(len(ruleset), 6)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(3, 20):
+			step = i - 3
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			if 0 == (step % 3):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_divide_2
+	
+	def test_comma_1(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_day("3,7,11,16,20,23,31")
+		self.assertEqual(len(ruleset), 7)
+		
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			d = datetime.datetime(2012, 7, i, 9, 39)
+			if i in (3, 7, 11, 16, 20, 23, 31,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+		
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_comma_1
+	
+	def test_comma_2(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_day(",3,7,11,,16,20,23, 31,")
+		self.assertEqual(len(ruleset), 7)
+		
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			d = datetime.datetime(2012, 7, i, 9, 39)
+			if i in (3, 7, 11, 16, 20, 23, 31,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+		
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_comma_2
+	
+	def test_comma_3(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
+		
+		ruleset = crontimesequence.parse_cronstring_day( ",".join([str(v) for v in range(-3, 90)]) )
+		self.assertEqual(len(ruleset), 31)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# ### def test_comma_3
+
+	def test_last_day_of_month(self):
+		""" check if the last day of month rule can work correctly """
+		
+		ruleset = crontimesequence.parse_cronstring_day("L")
+		self.assertEqual(len(ruleset), 1)
+		
+		delta_1_day = datetime.timedelta(days=1)
+		
+		for y in range(1990, 2039):
+			month_day_count_map = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,]
+			if (0 == (y % 400)) or ( (0 != (y % 100)) and (0 == (y % 4)) ):
+				month_day_count_map[2] = 29
+			
+			for m in range(1, 13):
+				candidate_val = datetime.datetime(y, m, 1, 9, 39)
+				month_day_count = month_day_count_map[m]
+				
+				while m == candidate_val.month:
+					if month_day_count == candidate_val.day:
+						is_rule_dateset_compatible(self, ruleset, (candidate_val,), True)
+					else:
+						is_rule_dateset_compatible(self, ruleset, (candidate_val,), False)
+					
+					candidate_val = candidate_val + delta_1_day
+	# ### def test_last_day_of_month
+	
+	def test_hybrid(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		
+		ruleset = crontimesequence.parse_cronstring_day("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
+		
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			d = datetime.datetime(2012, 7, i, 9, 39)
+			if i in (1, 5, 7, 9, 10, 11, 12, 13, 15, 17, 19, 20, 23, 28, 29, 30, 31,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+		
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_hybrid
+
+	def test_directfeed_1(self):
+		""" check if the parser can work correctly with directly feed integer """
+		
+		ruleset = crontimesequence.parse_cronstring_day(6)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			if 6 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_1
+	
+	def test_directfeed_2(self):
+		""" check if the parser can work correctly with directly feed bool value True """
+		
+		ruleset = crontimesequence.parse_cronstring_day(True)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			if 1 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_2
+	
+	def test_directfeed_3(self):
+		""" check if the parser can work correctly with directly feed bool value False """
+		
+		ruleset = crontimesequence.parse_cronstring_day(False)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			if 0 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_3
+# ### class Test_parse_cronstring_day
+
+
 
 if __name__ == '__main__':
 	unittest.main()
