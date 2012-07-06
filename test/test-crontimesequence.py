@@ -381,6 +381,15 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
 	# ### def test_comma_2
 	
+	def test_comma_3(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
+		
+		ruleset = crontimesequence.parse_cronstring_minute( ",".join([str(v) for v in range(-3, 90)]) )
+		self.assertEqual(len(ruleset), 60)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
+	# ### def test_comma_3
+	
 	def test_hybrid(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 		
@@ -512,6 +521,15 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
 	# ### def test_comma_2
+	
+	def test_comma_3(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
+		
+		ruleset = crontimesequence.parse_cronstring_hour( ",".join([str(v) for v in range(-3, 90)]) )
+		self.assertEqual(len(ruleset), 24)
+		
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, i, 39) for i in range(0, 24)], True)
+	# ### def test_comma_3
 	
 	def test_hybrid(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
