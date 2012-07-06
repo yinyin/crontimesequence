@@ -406,7 +406,61 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
-	# ### def test_comma
+	# ### def test_hybrid
+	
+	def test_directfeed_1(self):
+		""" check if the parser can work correctly with directly feed integer """
+		
+		ruleset = crontimesequence.parse_cronstring_minute(6)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 60):
+			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
+			if 6 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_1
+	
+	def test_directfeed_2(self):
+		""" check if the parser can work correctly with directly feed bool value True """
+		
+		ruleset = crontimesequence.parse_cronstring_minute(True)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 60):
+			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
+			if 1 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_2
+	
+	def test_directfeed_3(self):
+		""" check if the parser can work correctly with directly feed bool value False """
+		
+		ruleset = crontimesequence.parse_cronstring_minute(False)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 60):
+			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
+			if 0 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_3
 # ### class Test_parse_cronstring_minute
 
 
@@ -547,7 +601,61 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
-	# ### def test_comma
+	# ### def test_hybrid
+
+	def test_directfeed_1(self):
+		""" check if the parser can work correctly with directly feed integer """
+		
+		ruleset = crontimesequence.parse_cronstring_hour(6)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 24):
+			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
+			if 6 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_1
+	
+	def test_directfeed_2(self):
+		""" check if the parser can work correctly with directly feed bool value True """
+		
+		ruleset = crontimesequence.parse_cronstring_hour(True)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 24):
+			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
+			if 1 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_2
+	
+	def test_directfeed_3(self):
+		""" check if the parser can work correctly with directly feed bool value False """
+		
+		ruleset = crontimesequence.parse_cronstring_hour(False)
+		self.assertEqual(len(ruleset), 1)
+		
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 24):
+			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
+			if 0 == i:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_3
 # ### class Test_parse_cronstring_hour
 
 
