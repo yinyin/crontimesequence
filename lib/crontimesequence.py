@@ -259,7 +259,8 @@ def parse_cronstring_minute(vL, vT=None):
 		else:
 			try:
 				vv = int(vL)
-				return (ScalarValue(vv, 'minute'),)
+				if (vv >= 0) and (vv <= 59):
+					return (ScalarValue(vv, 'minute'),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		return ()
@@ -287,7 +288,8 @@ def parse_cronstring_hour(vL, vT=None):
 		else:
 			try:
 				vv = int(vL)
-				return (ScalarValue(vv, 'hour'),)
+				if (vv >= 0) and (vv <= 23):
+					return (ScalarValue(vv, 'hour'),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		return ()
@@ -317,13 +319,15 @@ def parse_cronstring_day(vL, vT=None):
 		elif (1 < len(vL)) and ('W' == vL[-1:]):
 			try:
 				nv = int(vL[:-1])
-				return (NearestWorkDayValue(nv),)
+				if (nv >= 1) and (nv <= 31):
+					return (NearestWorkDayValue(nv),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r, rule=W)" % (vL,)
 		else:
 			try:
 				vv = int(vL)
-				return (ScalarValue(vv, 'day'),)
+				if (vv >= 1) and (vv <= 31):
+					return (ScalarValue(vv, 'day'),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		return ()
@@ -351,7 +355,8 @@ def parse_cronstring_month(vL, vT=None):
 		else:
 			try:
 				vv = int(vL)
-				return (ScalarValue(vv, 'month'),)
+				if (vv >= 1) and (vv <= 12):
+					return (ScalarValue(vv, 'month'),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		return ()
@@ -379,20 +384,23 @@ def parse_cronstring_weekday(vL, vT=None):
 		elif (2 == len(vL)) and ('L' == vL[1]):
 			try:
 				ww = int(vL[0])
-				return (LastWeekdayOfMonthValue(ww),)
+				if (ww >= 0) and (ww <= 7):
+					return (LastWeekdayOfMonthValue(ww),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		elif (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
 				nth = int(vL[2])
-				return (NthWeekdayOfMonthValue(ww, nth),)
+				if (ww >= 0) and (ww <= 7) and (nth >= 1) and (nth <= 5):
+					return (NthWeekdayOfMonthValue(ww, nth),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		else:
 			try:
 				vv = int(vL)
-				return (ScalarValue(vv, 'weekday'),)
+				if (vv >= 0) and (vv <= 7):
+					return (ScalarValue(vv, 'weekday'),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
 		return ()
