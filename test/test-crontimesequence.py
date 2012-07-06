@@ -257,14 +257,20 @@ def is_rule_dateset_compatible(testcase, ruleset, dateset, expret, msg=None):
 	
 	for d in dateset:
 		final_ret = False
+		rulemark = None
 		for rule in ruleset:
 			if rule.is_accept(d):
 				final_ret = True
+				if False == expret:
+					rulemark = rule
+			else:
+				if True == expret:
+					rulemark = rule
 		
 		if msg is None:
-			fmsg = "%r vs. %r" % (rule, d,)
+			fmsg = "%r vs. %r" % (rulemark, d,)
 		else:
-			fmsg = "%r (%r vs. %r)" % (msg, rule, d,)
+			fmsg = "%r (%r vs. %r)" % (msg, rulemark, d,)
 		testcase.assertEqual(expret, final_ret, fmsg)
 # ### def is_rule_dateset_compatible
 
@@ -864,7 +870,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		""" check if the parser can work correctly with directly feed bool value False """
 		
 		ruleset = crontimesequence.parse_cronstring_day(False)
-		self.assertEqual(len(ruleset), 1)
+		self.assertEqual(len(ruleset), 0)
 		
 		test_candidate_positive = []
 		test_candidate_negative = []
