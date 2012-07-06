@@ -214,7 +214,7 @@ class NthWeekdayOfMonthValue(CronRule):
 
 
 def _parse_cronstring_common(v, subparser):
-	if not (isinstance(v, str) or isinstance(v, unicode)):
+	if not isinstance(v, (str, unicode)):
 		return None
 	elif ',' in v:
 		vseq = v.split(',')
