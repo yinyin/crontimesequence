@@ -316,7 +316,7 @@ def parse_cronstring_day(vL, vT=None):
 			return parse_cronstring_day(1, 31)
 		elif 'L' == vL:
 			return (_cached_last_day_of_month,)
-		elif (1 < len(vL)) and ('W' == vL[-1:]):
+		elif isinstance(vL, (str, unicode,)) and (1 < len(vL)) and ('W' == vL[-1:]):
 			try:
 				nv = int(vL[:-1])
 				if (nv >= 1) and (nv <= 31):
