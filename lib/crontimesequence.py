@@ -365,7 +365,7 @@ def parse_cronstring_month(vL, vT=None):
 # ### def parse_cronstring_month
 
 def parse_cronstring_weekday(vL, vT=None):
-	result = parse_cronstring_weekday(vL, parse_cronstring_month)
+	result = _parse_cronstring_common(vL, parse_cronstring_weekday)
 
 	if result is None:
 		if vT is not None:
