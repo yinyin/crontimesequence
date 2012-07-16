@@ -1306,7 +1306,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		""" check if the parser can work correctly with directly feed bool value False """
 
 		ruleset = crontimesequence.parse_cronstring_weekday(False)
-		self.assertEqual(len(ruleset), 0)
+		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
 		test_candidate_negative = []
