@@ -1078,6 +1078,251 @@ class Test_parse_cronstring_month(unittest.TestCase):
 # ### class Test_parse_cronstring_month
 
 
+class Test_parse_cronstring_weekday(unittest.TestCase):
+	""" test the parse_cronstring_weekday function """
+
+	def test_star(self):
+		""" check if the generated rule set of "*" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("*")
+		self.assertEqual(len(ruleset), 7)
+
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# ### def test_star
+
+	def test_range_1(self):
+		""" check if the generated rule set of "X-Y" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3-5")
+		self.assertEqual(len(ruleset), 3)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if (3 <= tweekday) and (5 >= tweekday):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_range_1
+
+	def test_range_2(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as start """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("0-2")
+		self.assertEqual(len(ruleset), 3)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (1, 2, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_range_2
+	
+	def test_range_3(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as end """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("5-7")
+		self.assertEqual(len(ruleset), 3)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (5, 6, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_range_3
+
+	def test_range_4(self):
+		""" check if the generated rule set of "X-" is ignored correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3-")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_4
+
+	def test_range_5(self):
+		""" check if the generated rule set of "-Y" is ignored correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("-7")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_range_5
+
+	def test_divide_1(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("*/2")
+		self.assertEqual(len(ruleset), 4)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (1, 3, 5, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_divide_1
+
+	def test_divide_2(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("0-7/3")
+		self.assertEqual(len(ruleset), 3)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (3, 6, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_divide_2
+
+	def test_comma_1(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3,7,11")
+		self.assertEqual(len(ruleset), 2)
+
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (3, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_comma_1
+
+	def test_comma_2(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(",3 ,7,11,, ,")
+		self.assertEqual(len(ruleset), 3)
+
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (3, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_comma_2
+
+	def test_comma_3(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
+
+		ruleset = crontimesequence.parse_cronstring_weekday( ",".join([str(v) for v in range(-3, 90)]) )
+		self.assertEqual(len(ruleset), 8)
+
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# ### def test_comma_3
+
+	def test_hybrid(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
+
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			d = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = d.isoweekday()
+			if tweekday in (1, 5, 7,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_hybrid
+
+	def test_directfeed_1(self):
+		""" check if the parser can work correctly with directly feed integer """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(6)
+		self.assertEqual(len(ruleset), 1)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if 6 == tweekday:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_1
+
+	def test_directfeed_2(self):
+		""" check if the parser can work correctly with directly feed bool value True """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(True)
+		self.assertEqual(len(ruleset), 1)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if 1 == tweekday:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_2
+
+	def test_directfeed_3(self):
+		""" check if the parser can work correctly with directly feed bool value False """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(False)
+		self.assertEqual(len(ruleset), 0)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if 7 == tweekday:
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_3
+# ### class Test_parse_cronstring_month
+
+
 
 if __name__ == '__main__':
 	unittest.main()
