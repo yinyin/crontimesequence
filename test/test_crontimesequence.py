@@ -1222,7 +1222,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_weekday(",3 ,7,11,, ,")
-		self.assertEqual(len(ruleset), 3)
+		self.assertEqual(len(ruleset), 2)
 
 		positive_dateset = []
 		negative_dateset = []
