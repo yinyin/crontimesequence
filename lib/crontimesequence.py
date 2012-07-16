@@ -75,10 +75,10 @@ class LastDayOfMonthValue(CronRule):
 		"""
 
 		aux = d + datetime.timedelta(days=1)
-		
+
 		if 1 == aux.day:
 			return True
-		
+
 		return False
 	# ### def is_accept
 
@@ -95,7 +95,7 @@ class NearestWorkDayValue(CronRule):
 		""" constructor of nearest work day of month check rule.
 		"""
 		self.exp_workday = int(v)
-		
+
 		self.__cached_accept_date = None
 		self.__cached_reject_date = None
 	# ### def __init__
@@ -108,15 +108,15 @@ class NearestWorkDayValue(CronRule):
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-	
+
 		d_wd = d.isoweekday()
 		d_date = d.date()
-		
+
 		if d_date == self.__cached_accept_date:
 			return True
 		if d_date == self.__cached_reject_date:
 			return False
-		
+
 		result = False
 		if (6 == d_wd) or (7 == d_wd):
 			result = False
@@ -133,7 +133,7 @@ class NearestWorkDayValue(CronRule):
 					aux = d + datetime.timedelta(days=3)
 					if (self.exp_workday == (d.day + 2)) and (1 == aux.day):
 						result = True
-		
+
 		if result:
 			self.__cached_accept_date = d_date
 		else:
@@ -168,7 +168,7 @@ class LastWeekdayOfMonthValue(CronRule):
 			aux = d + datetime.timedelta(days=7)
 			if aux.month != d.month:
 				return True
-		
+
 		return False
 	# ### def is_accept
 
@@ -201,7 +201,7 @@ class NthWeekdayOfMonthValue(CronRule):
 			aux_1 = d - datetime.timedelta(days=(7*(self.exp_nth-1)))
 			if (aux_0.month != d.month) and (aux_1.month == d.month):
 				return True
-		
+
 		return False
 	# ### def is_accept
 
@@ -406,7 +406,7 @@ def parse_cronstring_weekday(vL, vT=None):
 		return ()
 	else:
 		return result
-# ### def parse_cronstring_month
+# ### def parse_cronstring_weekday
 
 
 
