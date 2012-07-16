@@ -381,14 +381,14 @@ def parse_cronstring_weekday(vL, vT=None):
 				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
 		elif '*' == vL:
 			return parse_cronstring_weekday(1, 7)
-		elif (2 == len(vL)) and ('L' == vL[1]):
+		elif isinstance(vL, (str, unicode,)) and (2 == len(vL)) and ('L' == vL[1]):
 			try:
 				ww = int(vL[0])
 				if (ww >= 0) and (ww <= 7):
 					return (LastWeekdayOfMonthValue(ww),)
 			except:
 				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
-		elif (3 == len(vL)) and ('#' == vL[1]):
+		elif isinstance(vL, (str, unicode,)) and (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
 				nth = int(vL[2])
