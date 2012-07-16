@@ -1205,8 +1205,8 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		ruleset = crontimesequence.parse_cronstring_weekday("3,7,11")
 		self.assertEqual(len(ruleset), 2)
 
-		positive_dateset = []
-		negative_dateset = []
+		test_candidate_positive = []
+		test_candidate_negative = []
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
@@ -1214,8 +1214,8 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
-		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
-		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_comma_1
 
 	def test_comma_2(self):
