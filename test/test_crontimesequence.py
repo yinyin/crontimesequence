@@ -502,6 +502,31 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_directfeed_3
+
+	def test_directfeed_4(self):
+		""" check if the parser can work correctly with directly feed negative range start """
+
+		ruleset = crontimesequence.parse_cronstring_minute(-100, 29)
+		self.assertEqual(len(ruleset), 30)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 60):
+			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
+			if (0 <= i) and (29 >= i):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_4
+
+	def test_directfeed_5(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end """
+
+		ruleset = crontimesequence.parse_cronstring_minute(-3, 'abc')
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_minute
 
 
@@ -732,6 +757,31 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_directfeed_3
+
+	def test_directfeed_4(self):
+		""" check if the parser can work correctly with directly feed negative range start """
+
+		ruleset = crontimesequence.parse_cronstring_hour(-3, 10)
+		self.assertEqual(len(ruleset), 11)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(0, 24):
+			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
+			if (0 <= i) and (10 >= i):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_4
+
+	def test_directfeed_5(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end """
+
+		ruleset = crontimesequence.parse_cronstring_hour(-3, 'abc')
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_hour
 
 
@@ -1658,7 +1708,33 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_directfeed_3
-# ### class Test_parse_cronstring_month
+
+	def test_directfeed_4(self):
+		""" check if the parser can work correctly with directly feed negative range start """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(-3, 2)
+		self.assertEqual(len(ruleset), 3)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if tweekday in (1, 2, 7,):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_directfeed_4
+
+	def test_directfeed_5(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end """
+
+		ruleset = crontimesequence.parse_cronstring_weekday(-3, 'abc')
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_directfeed_5
+# ### class Test_parse_cronstring_weekday
 
 
 
