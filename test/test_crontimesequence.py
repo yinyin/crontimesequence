@@ -927,6 +927,65 @@ class Test_parse_cronstring_day(unittest.TestCase):
 					candidate_val = candidate_val + delta_1_day
 	# ### def test_last_day_of_month
 
+	def test_nearest_workday_1(self):
+		""" check if "xW" syntax can work correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("1W")
+		self.assertEqual(len(ruleset), 1)
+
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 31):
+			d = datetime.datetime(2012, 9, i, 9, 39)
+			if 3 == i:
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_nearest_workday_1
+
+	def test_nearest_workday_2(self):
+		""" check if "xW,yW,zW" syntax can work correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("1W,22W,18W")
+		self.assertEqual(len(ruleset), 3)
+
+		positive_dateset = []
+		negative_dateset = []
+		for i in range(1, 32):
+			d = datetime.datetime(2012, 7, i, 9, 39)
+			if i in (2, 18, 23,):
+				positive_dateset.append(d)
+			else:
+				negative_dateset.append(d)
+
+		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
+		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# ### def test_nearest_workday_2
+
+	def test_nearest_workday_3(self):
+		""" check if "errW" syntax can handled correctly with unparsable err value """
+
+		ruleset = crontimesequence.parse_cronstring_day("abcW")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nearest_workday_3
+
+	def test_nearest_workday_4(self):
+		""" check if "errW" syntax can handled correctly with err out of range (< 1) """
+
+		ruleset = crontimesequence.parse_cronstring_day("0W")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nearest_workday_4
+
+	def test_nearest_workday_5(self):
+		""" check if "errW" syntax can handled correctly with err out of range (> 31) """
+
+		ruleset = crontimesequence.parse_cronstring_day("99W")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nearest_workday_5
+
 	def test_hybrid(self):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
