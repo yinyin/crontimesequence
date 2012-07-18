@@ -1245,6 +1245,48 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
 	# ### def test_comma_3
+	
+	def test_last_weekday(self):
+		""" check if the generated rule set of "xL" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3L")
+		self.assertEqual(len(ruleset), 1)
+
+		delta_7_day = datetime.timedelta(days=7)
+		test_candidate_positive = []
+		test_candidate_negative = []
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			next_week_day = candidate_val + delta_7_day
+			if (3 == candidate_val.isoweekday()) and (7 != next_week_day.month):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_last_weekday
+
+	def test_nth_weekday(self):
+		""" check if the generated rule set of "x#n" have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3#2")
+		self.assertEqual(len(ruleset), 1)
+
+		test_candidate_positive = []
+		test_candidate_negative = []
+		nth_count = 0
+		for i in range(1, 32):
+			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
+			tweekday = candidate_val.isoweekday()
+			if 3 == tweekday:
+				nth_count = nth_count + 1
+			if (3 == tweekday) and (2 == nth_count):
+				test_candidate_positive.append(candidate_val)
+			else:
+				test_candidate_negative.append(candidate_val)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
+		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# ### def test_nth_weekday
 
 	def test_hybrid(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
