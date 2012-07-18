@@ -771,6 +771,16 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		self.assertEqual(len(ruleset), 0)
 	# ### def test_range_3
 
+	def test_range_4(self):
+		""" check if the generated rule set of "X-Y" with negative X have correct rule items """
+
+		ruleset = crontimesequence.parse_cronstring_day("0-10")
+		self.assertEqual(len(ruleset), 10)
+
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 11)], True)
+		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(11, 32)], False)
+	# ### def test_range_4
+
 	def test_divide_1(self):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
