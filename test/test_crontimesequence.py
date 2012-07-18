@@ -397,7 +397,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 	# ### def test_comma_3
 
 	def test_hybrid(self):
-		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		""" check if the generated rule set with hybrid syntax have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_minute("*/10, 5-25/2, 51,52,53,54,55, 55-60/3")
 
@@ -592,7 +592,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 	# ### def test_comma_3
 
 	def test_hybrid(self):
-		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		""" check if the generated rule set with hybrid syntax have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_hour("*/5, 5-15/2, 10,11,12, 17-23/3")
 
@@ -813,7 +813,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 	# ### def test_last_day_of_month
 
 	def test_hybrid(self):
-		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		""" check if the generated rule set with hybrid syntax have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_day("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
 
@@ -1008,7 +1008,7 @@ class Test_parse_cronstring_month(unittest.TestCase):
 	# ### def test_comma_3
 
 	def test_hybrid(self):
-		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		""" check if the generated rule set with hybrid syntax have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_month("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
 
