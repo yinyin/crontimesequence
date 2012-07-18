@@ -1500,7 +1500,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
 	# ### def test_comma_3
 	
-	def test_last_weekday(self):
+	def test_last_weekday_1(self):
 		""" check if the generated rule set of "xL" have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_weekday("3L")
@@ -1518,9 +1518,23 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
-	# ### def test_last_weekday
+	# ### def test_last_weekday_1
 
-	def test_nth_weekday(self):
+	def test_last_weekday_2(self):
+		""" check if can correctly handle "errL" where error is not integer """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("aL")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_last_weekday_2
+
+	def test_last_weekday_3(self):
+		""" check if can correctly handle "errL" where error out of range """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("9L")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_last_weekday_3
+
+	def test_nth_weekday_1(self):
 		""" check if the generated rule set of "x#n" have correct rule items """
 
 		ruleset = crontimesequence.parse_cronstring_weekday("3#2")
@@ -1540,7 +1554,35 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
-	# ### def test_nth_weekday
+	# ### def test_nth_weekday_1
+
+	def test_nth_weekday_2(self):
+		""" check if can correctly handle "err#n" where err is not integer """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("a#2")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nth_weekday_2
+
+	def test_nth_weekday_3(self):
+		""" check if can correctly handle "x#err" where err is not integer """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3#b")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nth_weekday_3
+
+	def test_nth_weekday_4(self):
+		""" check if can correctly handle "err#n" where err out of range """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("9#2")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nth_weekday_4
+
+	def test_nth_weekday_5(self):
+		""" check if can correctly handle "x#err" where err out of range """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("3#9")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_nth_weekday_5
 
 	def test_hybrid(self):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
