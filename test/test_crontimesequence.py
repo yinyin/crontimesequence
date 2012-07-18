@@ -349,6 +349,41 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_divide_2
 
+	def test_divide_3(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_minute("1-9/a")
+		self.assertEqual(len(ruleset), 9)
+	# ### def test_divide_3
+
+	def test_divide_4(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_minute("1-b/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_4
+
+	def test_divide_5(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_minute("1-/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_5
+
+	def test_divide_6(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_minute("/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_6
+
+	def test_divide_7(self):
+		""" check if the generated rule set of "/" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_minute("/")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_7
+
 	def test_comma_1(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
@@ -544,6 +579,41 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_divide_2
 
+	def test_divide_3(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_hour("1-9/a")
+		self.assertEqual(len(ruleset), 9)
+	# ### def test_divide_3
+
+	def test_divide_4(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_hour("1-b/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_4
+
+	def test_divide_5(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_hour("1-/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_5
+
+	def test_divide_6(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_hour("/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_6
+
+	def test_divide_7(self):
+		""" check if the generated rule set of "/" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_hour("/")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_7
+
 	def test_comma_1(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
@@ -738,6 +808,41 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_divide_2
+
+	def test_divide_3(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("1-9/a")
+		self.assertEqual(len(ruleset), 9)
+	# ### def test_divide_3
+
+	def test_divide_4(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("1-b/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_4
+
+	def test_divide_5(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("1-/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_5
+
+	def test_divide_6(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_6
+
+	def test_divide_7(self):
+		""" check if the generated rule set of "/" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_day("/")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_7
 
 	def test_comma_1(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
@@ -959,6 +1064,41 @@ class Test_parse_cronstring_month(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_divide_2
+
+	def test_divide_3(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_month("1-9/a")
+		self.assertEqual(len(ruleset), 9)
+	# ### def test_divide_3
+
+	def test_divide_4(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_month("1-b/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_4
+
+	def test_divide_5(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_month("1-/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_5
+
+	def test_divide_6(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_month("/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_6
+
+	def test_divide_7(self):
+		""" check if the generated rule set of "/" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_month("/")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_7
 
 	def test_comma_1(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
@@ -1198,6 +1338,41 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_divide_2
+
+	def test_divide_3(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("1-6/a")
+		self.assertEqual(len(ruleset), 6)
+	# ### def test_divide_3
+
+	def test_divide_4(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("1-b/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_4
+
+	def test_divide_5(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("1-/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_5
+
+	def test_divide_6(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("/a")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_6
+
+	def test_divide_7(self):
+		""" check if the generated rule set of "/" can be handled correctly """
+
+		ruleset = crontimesequence.parse_cronstring_weekday("/")
+		self.assertEqual(len(ruleset), 0)
+	# ### def test_divide_7
 
 	def test_comma_1(self):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
