@@ -1289,16 +1289,16 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 	# ### def test_nth_weekday
 
 	def test_hybrid(self):
-		""" check if the generated rule set of "Z,Y,X" have correct rule items """
+		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
+		ruleset = crontimesequence.parse_cronstring_weekday("*/9, 5-15/2, 10,11, 2L,12, 17-23/3, 28-32,2#3 ,")
 
 		positive_dateset = []
 		negative_dateset = []
 		for i in range(1, 32):
 			d = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = d.isoweekday()
-			if tweekday in (1, 5, 7,):
+			if (tweekday in (1, 5, 7,)) or ( (2 == tweekday) and (i in (17, 31,)) ):
 				positive_dateset.append(d)
 			else:
 				negative_dateset.append(d)
