@@ -1740,6 +1740,45 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 class Test_IntegratingFunction(unittest.TestCase):
 	""" test integrating function """
 
+	def test_parse_rulestring(self):
+		""" check if generate rule to expected element """
+
+		rulearray = crontimesequence.parse_cronstring("19", "*", "*", "*", "*")
+		self.assertEqual(len(rulearray[0]), 1)
+		self.assertTrue(rulearray[1] is None)
+		self.assertTrue(rulearray[2] is None)
+		self.assertTrue(rulearray[3] is None)
+		self.assertTrue(rulearray[4] is None)
+
+		rulearray = crontimesequence.parse_cronstring("*", "3", "*", "*", "*")
+		self.assertTrue(rulearray[0] is None)
+		self.assertEqual(len(rulearray[1]), 1)
+		self.assertTrue(rulearray[2] is None)
+		self.assertTrue(rulearray[3] is None)
+		self.assertTrue(rulearray[4] is None)
+
+		rulearray = crontimesequence.parse_cronstring("*", "*", "7", "*", "*")
+		self.assertTrue(rulearray[0] is None)
+		self.assertTrue(rulearray[1] is None)
+		self.assertEqual(len(rulearray[2]), 1)
+		self.assertTrue(rulearray[3] is None)
+		self.assertTrue(rulearray[4] is None)
+
+		rulearray = crontimesequence.parse_cronstring("*", "*", "*", "11", "*")
+		self.assertTrue(rulearray[0] is None)
+		self.assertTrue(rulearray[1] is None)
+		self.assertTrue(rulearray[2] is None)
+		self.assertEqual(len(rulearray[3]), 1)
+		self.assertTrue(rulearray[4] is None)
+
+		rulearray = crontimesequence.parse_cronstring("*", "*", "*", "*", "5")
+		self.assertTrue(rulearray[0] is None)
+		self.assertTrue(rulearray[1] is None)
+		self.assertTrue(rulearray[2] is None)
+		self.assertTrue(rulearray[3] is None)
+		self.assertEqual(len(rulearray[4]), 1)
+	# ### def test_parse_rulestring
+
 	def test_every_3_hr_get_ruleset_n_filter(self):
 		""" generate rule set for 19 */3 * * * rule """
 
@@ -1780,6 +1819,41 @@ class Test_IntegratingFunction(unittest.TestCase):
 
 		self.assertEqual(len(result), 20)
 	# ### def test_every_3_hr_get_sequence
+
+	def test_annually_get_sequence(self):
+		""" generate sequence by 19 3 7 1 * rule """
+
+		d_s = datetime.datetime(2000, 9, 13, 1, 47, 16)
+		d_e = datetime.datetime(2003, 12, 22, 23, 5, 27)
+
+		result = crontimesequence.get_datetime_by_cronrule("19", "3", "7", "1", "*", d_s, d_e)
+
+		for d in result:
+			self.assertEqual(d.second, 0)
+			self.assertEqual(d.minute, 19)
+			self.assertEqual(d.hour, 3)
+			self.assertEqual(d.day, 7)
+			self.assertEqual(d.month, 1)
+
+		self.assertEqual(len(result), 3)
+	# ### def test_annually_get_sequence
+
+	def test_weekend_get_sequence(self):
+		""" generate sequence by 19 3 * * 6,7 rule """
+
+		d_s = datetime.datetime(2012, 7, 20, 10, 39, 20)
+		d_e = datetime.datetime(2012, 8, 22, 23, 5, 27)
+
+		result = crontimesequence.get_datetime_by_cronrule("19", "3", "*", "*", "6,7", d_s, d_e)
+
+		for d in result:
+			self.assertEqual(d.second, 0)
+			self.assertEqual(d.minute, 19)
+			self.assertEqual(d.hour, 3)
+			self.assertTrue(d.isoweekday() in (6, 7,))
+
+		self.assertEqual(len(result), 10)
+	# ### def test_weekend_get_sequence
 # ### class Test_IntegratingFunction
 
 
