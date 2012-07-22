@@ -1396,7 +1396,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
 	# ### def test_range_2
-	
+
 	def test_range_3(self):
 		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as end """
 
@@ -1549,7 +1549,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
 	# ### def test_comma_3
-	
+
 	def test_last_weekday_1(self):
 		""" check if the generated rule set of "xL" have correct rule items """
 
@@ -1735,6 +1735,49 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		self.assertEqual(len(ruleset), 0)
 	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_weekday
+
+
+class Test_IntegratingFunction(unittest.TestCase):
+	""" test integrating function """
+
+	def test_every_3_hr_get_ruleset_n_filter(self):
+		""" generate rule set for 19 */3 * * * rule """
+
+		rulearray = crontimesequence.parse_cronstring("19", "*/3", "*", "*", "*")
+
+		self.assertEqual(len(rulearray), 5)
+		self.assertEqual(len(rulearray[0]), 1)
+		self.assertEqual(len(rulearray[1]), 20)
+		self.assertTrue(rulearray[2] is None)
+		self.assertTrue(rulearray[3] is None)
+		self.assertTrue(rulearray[4] is None)
+
+		d_s = datetime.datetime(2012, 7, 20, 10, 39, 20)
+		d_e = datetime.datetime(2012, 7, 22, 23, 5, 27)
+
+		result = crontimesequence.filter_datetime_by_rule(rulearray, d_s, d_e)
+
+		for d in result:
+			self.assertEqual(d.second, 0)
+			self.assertEqual(d.minute, 19)
+			self.assertTrue(0 == (d.hour % 3))
+
+		self.assertEqual(len(result), 20)
+	# ### def test_every_3_hr_get_ruleset_n_filter
+
+	def test_every_3_hr_get_sequence(self):
+		""" generate sequence by 19 */3 * * * rule """
+
+		result = crontimesequence.get_datetime_by_cronrule("19", "*/3", "*", "*", "*")
+
+		for d in result:
+			self.assertEqual(d.second, 0)
+			self.assertEqual(d.minute, 19)
+			self.assertTrue(0 == (d.hour % 3))
+
+		self.assertEqual(len(result), 20)
+	# ### def test_every_3_hr_get_sequence
+# ### class Test_IntegratingFunction
 
 
 
