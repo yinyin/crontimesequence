@@ -1747,7 +1747,7 @@ class Test_IntegratingFunction(unittest.TestCase):
 
 		self.assertEqual(len(rulearray), 5)
 		self.assertEqual(len(rulearray[0]), 1)
-		self.assertEqual(len(rulearray[1]), 20)
+		self.assertEqual(len(rulearray[1]), 8)
 		self.assertTrue(rulearray[2] is None)
 		self.assertTrue(rulearray[3] is None)
 		self.assertTrue(rulearray[4] is None)
