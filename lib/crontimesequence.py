@@ -485,5 +485,21 @@ def filter_datetime_by_rule(rulearray, tstamp_start, tstamp_end):
 # ### def filter_datetime_by_rule
 
 
+def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, tstamp_start, tstamp_end):
+	""" filter given time-stamp range with given rules
+
+	Argument:
+		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
+		tstamp_start - range start (inclusive)
+		tstamp_end - range end (exclusive)
+	Return:
+		list of datetime object which complies to given rule array
+	"""
+
+	rulearray = parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
+	return filter_datetime_by_rule(rulearray, tstamp_start, tstamp_end)
+# ### def get_datetime_by_cronrule
+
+
 
 # vim: ts=4 sw=4 ai nowrap
