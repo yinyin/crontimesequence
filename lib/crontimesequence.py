@@ -441,7 +441,7 @@ def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
 # ### def parse_cronstring
 
 
-def filter_datetime_by_rule(rulearray, tstamp_start, tstamp_end):
+def filter_range_by_rule(rulearray, tstamp_start, tstamp_end):
 	""" filter timestamps within given range by given rule array
 
 	Argument:
@@ -482,7 +482,7 @@ def filter_datetime_by_rule(rulearray, tstamp_start, tstamp_end):
 		d = d + increment_delta
 
 	return result
-# ### def filter_datetime_by_rule
+# ### def filter_range_by_rule
 
 
 def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, tstamp_start, tstamp_end):
@@ -497,7 +497,7 @@ def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_
 	"""
 
 	rulearray = parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
-	return filter_datetime_by_rule(rulearray, tstamp_start, tstamp_end)
+	return filter_range_by_rule(rulearray, tstamp_start, tstamp_end)
 # ### def get_datetime_by_cronrule
 
 

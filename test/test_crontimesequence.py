@@ -1794,7 +1794,7 @@ class Test_IntegratingFunction(unittest.TestCase):
 		d_s = datetime.datetime(2012, 7, 20, 10, 39, 20)
 		d_e = datetime.datetime(2012, 7, 22, 23, 5, 27)
 
-		result = crontimesequence.filter_datetime_by_rule(rulearray, d_s, d_e)
+		result = crontimesequence.filter_range_by_rule(rulearray, d_s, d_e)
 
 		for d in result:
 			self.assertEqual(d.second, 0)
