@@ -1768,7 +1768,10 @@ class Test_IntegratingFunction(unittest.TestCase):
 	def test_every_3_hr_get_sequence(self):
 		""" generate sequence by 19 */3 * * * rule """
 
-		result = crontimesequence.get_datetime_by_cronrule("19", "*/3", "*", "*", "*")
+		d_s = datetime.datetime(2012, 7, 20, 10, 39, 20)
+		d_e = datetime.datetime(2012, 7, 22, 23, 5, 27)
+
+		result = crontimesequence.get_datetime_by_cronrule("19", "*/3", "*", "*", "*", d_s, d_e)
 
 		for d in result:
 			self.assertEqual(d.second, 0)
