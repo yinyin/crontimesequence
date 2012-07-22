@@ -409,5 +409,37 @@ def parse_cronstring_weekday(vL, vT=None):
 # ### def parse_cronstring_weekday
 
 
+def __parse_cronstring_impl(rulestring, ruleparsefunc):
+	try:
+		rulestring = str(rulestring).strip()
+		if "*" == rulestring:
+			return None
+		else:
+			return ruleparsefunc(rulestring)
+	except Exception as e:
+		print "Err: cannot load rule %r: %r" % (rulestring, e,)
+		return None
+# ### def __parse_cronstring_impl
+
+def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday):
+	""" parsing given cron-rule-string and result array of rule set
+
+	Argument:
+		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
+	Return:
+		5 element tuple which consists rule set for minute, hour, day, month, weekday respectively
+		the element would be None if there is no restriction
+	"""
+
+	rs_minute = __parse_cronstring_impl(rule_minute, parse_cronstring_minute)
+	rs_hour = __parse_cronstring_impl(rule_hour, parse_cronstring_hour)
+	rs_day = __parse_cronstring_impl(rule_day, parse_cronstring_day)
+	rs_month = __parse_cronstring_impl(rule_month, parse_cronstring_month)
+	rs_weekday = __parse_cronstring_impl(rule_weekday, parse_cronstring_weekday)
+
+	return (rs_minute, rs_hour, rs_day, rs_month, rs_weekday,)
+# ### def parse_cronstring
+
+
 
 # vim: ts=4 sw=4 ai nowrap
