@@ -5,6 +5,8 @@
 
 import re
 import datetime
+import logging
+_log = logging.getLogger(__name__)
 
 
 class CronRule(object):
@@ -229,7 +231,7 @@ def _parse_cronstring_common(v, subparser):
 			vstep = int(parted[1].strip())
 			return [vseq[idx] for idx in range(0, len(vseq), vstep)]
 		except Exception as e:
-			print "Syntax Err: cannot parse step value to integer (token=%r>%r, e=%r)" % (v, parted, e,)
+			_log.error("Syntax Err: cannot parse step value to integer (token=%r>%r, e=%r)", v, parted, e)
 			return vseq
 	elif '-' in v:
 		parted = v.split('-')
@@ -253,7 +255,7 @@ def parse_cronstring_minute(vL, vT=None):
 					bR = 60
 				return [ScalarValue(velem, 'minute') for velem in range(bL, bR)]
 			except:
-				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
+				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_minute(0, 59)
 		else:
@@ -262,7 +264,7 @@ def parse_cronstring_minute(vL, vT=None):
 				if (vv >= 0) and (vv <= 59):
 					return (ScalarValue(vv, 'minute'),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -282,7 +284,7 @@ def parse_cronstring_hour(vL, vT=None):
 					bR = 24
 				return [ScalarValue(velem, 'hour') for velem in range(bL, bR)]
 			except:
-				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
+				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_hour(0, 23)
 		else:
@@ -291,7 +293,7 @@ def parse_cronstring_hour(vL, vT=None):
 				if (vv >= 0) and (vv <= 23):
 					return (ScalarValue(vv, 'hour'),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -311,7 +313,7 @@ def parse_cronstring_day(vL, vT=None):
 					bR = 32
 				return [ScalarValue(velem, 'day') for velem in range(bL, bR)]
 			except:
-				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
+				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_day(1, 31)
 		elif 'L' == vL:
@@ -322,14 +324,14 @@ def parse_cronstring_day(vL, vT=None):
 				if (nv >= 1) and (nv <= 31):
 					return (NearestWorkDayValue(nv),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r, rule=W)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r, rule=W)", vL)
 		else:
 			try:
 				vv = int(vL)
 				if (vv >= 1) and (vv <= 31):
 					return (ScalarValue(vv, 'day'),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -349,7 +351,7 @@ def parse_cronstring_month(vL, vT=None):
 					bR = 13
 				return [ScalarValue(velem, 'month') for velem in range(bL, bR)]
 			except:
-				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
+				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_month(1, 12)
 		else:
@@ -358,7 +360,7 @@ def parse_cronstring_month(vL, vT=None):
 				if (vv >= 1) and (vv <= 12):
 					return (ScalarValue(vv, 'month'),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -378,7 +380,7 @@ def parse_cronstring_weekday(vL, vT=None):
 					bR = 8
 				return [ScalarValue(velem, 'weekday') for velem in range(bL, bR)]
 			except:
-				print "Syntax Err: cannot convert one or both of range value (token=%r-%r)" % (vL, vT,)
+				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_weekday(1, 7)
 		elif isinstance(vL, (str, unicode,)) and (2 == len(vL)) and ('L' == vL[1]):
@@ -387,7 +389,7 @@ def parse_cronstring_weekday(vL, vT=None):
 				if (ww >= 0) and (ww <= 7):
 					return (LastWeekdayOfMonthValue(ww),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		elif isinstance(vL, (str, unicode,)) and (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
@@ -395,14 +397,14 @@ def parse_cronstring_weekday(vL, vT=None):
 				if (ww >= 0) and (ww <= 7) and (nth >= 1) and (nth <= 5):
 					return (NthWeekdayOfMonthValue(ww, nth),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		else:
 			try:
 				vv = int(vL)
 				if (vv >= 0) and (vv <= 7):
 					return (ScalarValue(vv, 'weekday'),)
 			except:
-				print "Syntax Err: cannot convert value (token=%r)" % (vL,)
+				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -417,7 +419,7 @@ def __parse_cronstring_impl(rulestring, ruleparsefunc):
 		else:
 			return ruleparsefunc(rulestring)
 	except Exception as e:
-		print "Err: cannot load rule %r: %r" % (rulestring, e,)
+		_log.exception("Err: cannot load rule %r: %r", rulestring, e)
 		return None
 # ### def __parse_cronstring_impl
 
