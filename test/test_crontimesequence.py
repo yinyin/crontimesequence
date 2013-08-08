@@ -5,6 +5,7 @@
 import unittest
 import sys
 import datetime
+import logging
 
 sys.path.append('lib')
 
@@ -1859,6 +1860,10 @@ class Test_IntegratingFunction(unittest.TestCase):
 
 
 if __name__ == '__main__':
+	logging.basicConfig(stream=sys.stderr)
+
 	unittest.main()
+# <<< if __name__ == '__main__':
+
 
 # vim: ts=4 sw=4 ai nowrap
