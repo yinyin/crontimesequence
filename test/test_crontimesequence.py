@@ -6,9 +6,17 @@ import sys
 import datetime
 import logging
 
-sys.path.append('lib2')
+# {{{ import target module according to Python version
+try:
+	import crontimesequence #@UnusedImport
+except:
+	if sys.version_info.major > 2:
+		sys.path.append('lib3')
+	else:
+		sys.path.append('lib2')
+	import crontimesequence #@Reimport
+# }}} import target module according to Python version
 
-import crontimesequence
 
 
 class TestScalarValue(unittest.TestCase):
