@@ -201,33 +201,34 @@ class TestNthWeekdayOfMonthValue(unittest.TestCase):
 		eval_step = datetime.timedelta(seconds=5927)
 
 		for expweekday in range(0, 8):
-			for nth in range(0, 5):
+			for nth in range(1, 6):
 				rule_obj = crontimesequence.NthWeekdayOfMonthValue(expweekday, nth)
 
 				eval_rolling = datetime.datetime(2011, 1, 1, 1, 30, 0)
 				eval_end_date = datetime.datetime(2014, 1, 1, 1, 30, 0)
 
+				current_month = 1
 				wd_matched_count = 0
 				last_wd_matched_date = None
 
-				while eval_rolling > eval_end_date:
+				while eval_rolling < eval_end_date:
 					if eval_rolling.month != current_month:
+						current_month = eval_rolling.month
 						wd_matched_count = 0
 						last_wd_matched_date = None
 
 					rolling_wd = eval_rolling.isoweekday()
 					rolling_date = eval_rolling.date()
 
-					if wd_matched_count < nth:
-						if (rolling_wd == expweekday) or ((7 == rolling_wd) and (0 == expweekday)):
-							if last_wd_matched_date != rolling_date:
-								last_wd_matched_date = rolling_date
-								wd_matched_count = wd_matched_count + 1
+					if (rolling_wd == expweekday) or ((7 == rolling_wd) and (0 == expweekday)):
+						if last_wd_matched_date != rolling_date:
+							last_wd_matched_date = rolling_date
+							wd_matched_count = wd_matched_count + 1
 
 					ret = rule_obj.is_accept(eval_rolling)
 
 					msg = "expweekday = %d, nth = %d, rolling = %r" % (expweekday, nth, eval_rolling,)
-					if rolling_date == last_wd_matched_date:
+					if (wd_matched_count == nth) and (rolling_date == last_wd_matched_date):
 						self.assertTrue(ret, msg)
 					else:
 						self.assertFalse(ret, msg)
