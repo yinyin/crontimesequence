@@ -7,7 +7,7 @@ from distutils.core import setup
 
 
 # {{{ select package code folder
-if sys.version_info.major > 2:
+if sys.version_info[0] > 2:
 	PACKAGE_FOLDER = 'lib3'
 else:
 	PACKAGE_FOLDER = 'lib2'
