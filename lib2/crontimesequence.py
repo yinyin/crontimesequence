@@ -209,7 +209,7 @@ class NthWeekdayOfMonthValue(CronRule):
 
 
 def _parse_cronstring_common(v, subparser):
-	if not isinstance(v, (str, unicode)):
+	if not isinstance(v, basestring):
 		return None
 	elif ',' in v:
 		vseq = v.split(',')
@@ -311,7 +311,7 @@ def parse_cronstring_day(vL, vT=None):
 			return parse_cronstring_day(1, 31)
 		elif 'L' == vL:
 			return (_cached_last_day_of_month,)
-		elif isinstance(vL, (str, unicode,)) and (1 < len(vL)) and ('W' == vL[-1:]):
+		elif isinstance(vL, basestring) and (1 < len(vL)) and ('W' == vL[-1:]):
 			try:
 				nv = int(vL[:-1])
 				if (nv >= 1) and (nv <= 31):
@@ -376,14 +376,14 @@ def parse_cronstring_weekday(vL, vT=None):
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_weekday(1, 7)
-		elif isinstance(vL, (str, unicode,)) and (2 == len(vL)) and ('L' == vL[1]):
+		elif isinstance(vL, basestring) and (2 == len(vL)) and ('L' == vL[1]):
 			try:
 				ww = int(vL[0])
 				if (ww >= 0) and (ww <= 7):
 					return (LastWeekdayOfMonthValue(ww),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
-		elif isinstance(vL, (str, unicode,)) and (3 == len(vL)) and ('#' == vL[1]):
+		elif isinstance(vL, basestring) and (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
 				nth = int(vL[2])
@@ -485,7 +485,6 @@ def filter_range_by_rule(rulearray, tstamp_start, tstamp_end):
 	while d < tstamp_end:
 		if check_timestamp_by_rule(rulearray, d):
 			result.append(d)
-
 		d = d + increment_delta
 
 	return result
