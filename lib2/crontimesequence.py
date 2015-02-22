@@ -222,7 +222,7 @@ def _parse_cronstring_common(v, subparser):
 		vseq = subparser( parted[0].strip() )
 		try:
 			vstep = int(parted[1].strip())
-			return [vseq[idx] for idx in range(0, len(vseq), vstep)]
+			return [vseq[idx] for idx in xrange(0, len(vseq), vstep)]
 		except Exception as e:
 			_log.error("Syntax Error: cannot parse step value to integer (token=%r>%r, e=%r)", v, parted, e)
 			return vseq
@@ -246,7 +246,7 @@ def parse_cronstring_minute(vL, vT=None):
 					bL = 0
 				if bR > 60:
 					bR = 60
-				return [ScalarValue(velem, 'minute') for velem in range(bL, bR)]
+				return [ScalarValue(velem, 'minute') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
@@ -275,7 +275,7 @@ def parse_cronstring_hour(vL, vT=None):
 					bL = 0
 				if bR > 24:
 					bR = 24
-				return [ScalarValue(velem, 'hour') for velem in range(bL, bR)]
+				return [ScalarValue(velem, 'hour') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
@@ -304,7 +304,7 @@ def parse_cronstring_day(vL, vT=None):
 					bL = 1
 				if bR > 32:
 					bR = 32
-				return [ScalarValue(velem, 'day') for velem in range(bL, bR)]
+				return [ScalarValue(velem, 'day') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
@@ -342,7 +342,7 @@ def parse_cronstring_month(vL, vT=None):
 					bL = 1
 				if bR > 13:
 					bR = 13
-				return [ScalarValue(velem, 'month') for velem in range(bL, bR)]
+				return [ScalarValue(velem, 'month') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
@@ -371,7 +371,7 @@ def parse_cronstring_weekday(vL, vT=None):
 					bL = 0
 				if bR > 8:
 					bR = 8
-				return [ScalarValue(velem, 'weekday') for velem in range(bL, bR)]
+				return [ScalarValue(velem, 'weekday') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
