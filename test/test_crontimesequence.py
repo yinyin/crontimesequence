@@ -279,43 +279,73 @@ def is_rule_dateset_compatible(testcase, ruleset, dateset, expret, msg=None):
 class Test_parse_cronstring_minute(unittest.TestCase):
 	""" test the parse_cronstring_minute function """
 
-	def test_star(self):
+	def _test_star(self, raise_error):
 		""" check if the generated rule set of "*" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_minute("*")
+		ruleset = crontimesequence.parse_cronstring_minute("*", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 60)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
+	# --- def _test_star
+	def test_star_DEx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Disabled Exception Raising) """
+		self._test_star(False)
+	def test_star_REx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Enabled Exception Raising) """
+		self._test_star(True)
+		# self.assertRaises(ValueError, self._test_star, True)
 	# ### def test_star
 
-	def test_range_1(self):
+	def _test_range_1(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_minute("20-59")
+		ruleset = crontimesequence.parse_cronstring_minute("20-59", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 40)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(20, 60)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 20)], False)
+	# --- def _test_range_1
+	def test_range_1_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Disabled Exception Raising) """
+		self._test_range_1(False)
+	def test_range_1_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Enabled Exception Raising) """
+		self._test_range_1(True)
+		# self.assertRaises(ValueError, self._test_range_1, True)
 	# ### def test_range_1
 
-	def test_range_2(self):
+	def _test_range_2(self, raise_error):
 		""" check if the generated rule set of "X-" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("20-")
+		ruleset = crontimesequence.parse_cronstring_minute("20-", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_2
+	def test_range_2_DEx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_2(False)
+	def test_range_2_REx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_2, True)
 	# ### def test_range_2
 
-	def test_range_3(self):
+	def _test_range_3(self, raise_error):
 		""" check if the generated rule set of "-Y" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("-50")
+		ruleset = crontimesequence.parse_cronstring_minute("-50", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_3
+	def test_range_3_DEx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_3(False)
+	def test_range_3_REx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_3, True)
 	# ### def test_range_3
 
-	def test_divide_1(self):
+	def _test_divide_1(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
-		ruleset = crontimesequence.parse_cronstring_minute("*/17")
+		ruleset = crontimesequence.parse_cronstring_minute("*/17", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 4)
 
 		test_candidate_positive = []
@@ -329,12 +359,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_1
+	def test_divide_1_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Disabled Exception Raising) """
+		self._test_divide_1(False)
+	def test_divide_1_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Enabled Exception Raising) """
+		self._test_divide_1(True)
+		# self.assertRaises(ValueError, self._test_divide_1, True)
 	# ### def test_divide_1
 
-	def test_divide_2(self):
+	def _test_divide_2(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 
-		ruleset = crontimesequence.parse_cronstring_minute("20-59/3")
+		ruleset = crontimesequence.parse_cronstring_minute("20-59/3", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 14)
 
 		test_candidate_positive = []
@@ -348,47 +386,90 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_2
+	def test_divide_2_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Disabled Exception Raising) """
+		self._test_divide_2(False)
+	def test_divide_2_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Enabled Exception Raising) """
+		self._test_divide_2(True)
+		# self.assertRaises(ValueError, self._test_divide_2, True)
 	# ### def test_divide_2
 
-	def test_divide_3(self):
+	def _test_divide_3(self, raise_error):
 		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("1-9/a")
+		ruleset = crontimesequence.parse_cronstring_minute("1-9/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 9)
+	# --- def _test_divide_3
+	def test_divide_3_DEx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_3(False)
+	def test_divide_3_REx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_3, True)
 	# ### def test_divide_3
 
-	def test_divide_4(self):
+	def _test_divide_4(self, raise_error):
 		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("1-b/a")
+		ruleset = crontimesequence.parse_cronstring_minute("1-b/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_4
+	def test_divide_4_DEx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_4(False)
+	def test_divide_4_REx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_4, True)
 	# ### def test_divide_4
 
-	def test_divide_5(self):
+	def _test_divide_5(self, raise_error):
 		""" check if the generated rule set of "X-/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("1-/a")
+		ruleset = crontimesequence.parse_cronstring_minute("1-/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_5
+	def test_divide_5_DEx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_5(False)
+	def test_divide_5_REx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_5, True)
 	# ### def test_divide_5
 
-	def test_divide_6(self):
+	def _test_divide_6(self, raise_error):
 		""" check if the generated rule set of "/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("/a")
+		ruleset = crontimesequence.parse_cronstring_minute("/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_6
+	def test_divide_6_DEx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_6(False)
+	def test_divide_6_REx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_6, True)
 	# ### def test_divide_6
 
-	def test_divide_7(self):
+	def _test_divide_7(self, raise_error):
 		""" check if the generated rule set of "/" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_minute("/")
+		ruleset = crontimesequence.parse_cronstring_minute("/", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_7
+	def test_divide_7_DEx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_7(False)
+	def test_divide_7_REx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_7, True)
 	# ### def test_divide_7
 
-	def test_comma_1(self):
+	def _test_comma_1(self, raise_error):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_minute("3,7,11,36,57,59")
+		ruleset = crontimesequence.parse_cronstring_minute("3,7,11,36,57,59", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		positive_dateset = []
@@ -402,12 +483,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_1
+	def test_comma_1_DEx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_1(False)
+	def test_comma_1_REx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Enabled Exception Raising) """
+		self._test_comma_1(True)
+		# self.assertRaises(ValueError, self._test_comma_1, True)
 	# ### def test_comma_1
 
-	def test_comma_2(self):
+	def _test_comma_2(self, raise_error):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_minute(",3,7,11,,36,57,59,")
+		ruleset = crontimesequence.parse_cronstring_minute(",3,7,11,,36,57,59,", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		positive_dateset = []
@@ -421,21 +510,35 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_2
+	def test_comma_2_DEx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_2(False)
+	def test_comma_2_REx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_2, True)
 	# ### def test_comma_2
 
-	def test_comma_3(self):
+	def _test_comma_3(self, raise_error):
 		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
 
-		ruleset = crontimesequence.parse_cronstring_minute( ",".join([str(v) for v in range(-3, 90)]) )
+		ruleset = crontimesequence.parse_cronstring_minute( ",".join([str(v) for v in range(-3, 90)]) , raise_error=raise_error)
 		self.assertEqual(len(ruleset), 60)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, 8, i) for i in range(0, 60)], True)
+	# --- def _test_comma_3
+	def test_comma_3_DEx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Disabled Exception Raising) """
+		self._test_comma_3(False)
+	def test_comma_3_REx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_3, True)
 	# ### def test_comma_3
 
-	def test_hybrid(self):
+	def _test_hybrid(self, raise_error):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_minute("*/10, 5-25/2, 51,52,53,54,55, 55-60/3")
+		ruleset = crontimesequence.parse_cronstring_minute("*/10, 5-25/2, 51,52,53,54,55, 55-60/3", raise_error=raise_error)
 
 		positive_dateset = []
 		negative_dateset = []
@@ -448,12 +551,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_hybrid
+	def test_hybrid_DEx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Disabled Exception Raising) """
+		self._test_hybrid(False)
+	def test_hybrid_REx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Enabled Exception Raising) """
+		self._test_hybrid(True)
+		# self.assertRaises(ValueError, self._test_hybrid, True)
 	# ### def test_hybrid
 
-	def test_directfeed_1(self):
+	def _test_directfeed_1(self, raise_error):
 		""" check if the parser can work correctly with directly feed integer """
 
-		ruleset = crontimesequence.parse_cronstring_minute(6)
+		ruleset = crontimesequence.parse_cronstring_minute(6, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -466,12 +577,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_1
+	def test_directfeed_1_DEx(self):
+		""" check if the parser can work correctly with directly feed integer  (Disabled Exception Raising) """
+		self._test_directfeed_1(False)
+	def test_directfeed_1_REx(self):
+		""" check if the parser can work correctly with directly feed integer  (Enabled Exception Raising) """
+		self._test_directfeed_1(True)
+		# self.assertRaises(ValueError, self._test_directfeed_1, True)
 	# ### def test_directfeed_1
 
-	def test_directfeed_2(self):
+	def _test_directfeed_2(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value True """
 
-		ruleset = crontimesequence.parse_cronstring_minute(True)
+		ruleset = crontimesequence.parse_cronstring_minute(True, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -484,12 +603,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_2
+	def test_directfeed_2_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Disabled Exception Raising) """
+		self._test_directfeed_2(False)
+	def test_directfeed_2_REx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Enabled Exception Raising) """
+		self._test_directfeed_2(True)
+		# self.assertRaises(ValueError, self._test_directfeed_2, True)
 	# ### def test_directfeed_2
 
-	def test_directfeed_3(self):
+	def _test_directfeed_3(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value False """
 
-		ruleset = crontimesequence.parse_cronstring_minute(False)
+		ruleset = crontimesequence.parse_cronstring_minute(False, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -502,12 +629,20 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_3
+	def test_directfeed_3_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Disabled Exception Raising) """
+		self._test_directfeed_3(False)
+	def test_directfeed_3_REx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Enabled Exception Raising) """
+		self._test_directfeed_3(True)
+		# self.assertRaises(ValueError, self._test_directfeed_3, True)
 	# ### def test_directfeed_3
 
-	def test_directfeed_4(self):
+	def _test_directfeed_4(self, raise_error):
 		""" check if the parser can work correctly with directly feed negative range start """
 
-		ruleset = crontimesequence.parse_cronstring_minute(-100, 29)
+		ruleset = crontimesequence.parse_cronstring_minute(-100, 29, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 30)
 
 		test_candidate_positive = []
@@ -520,13 +655,28 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_4
+	def test_directfeed_4_DEx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Disabled Exception Raising) """
+		self._test_directfeed_4(False)
+	def test_directfeed_4_REx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Enabled Exception Raising) """
+		self._test_directfeed_4(True)
+		# self.assertRaises(ValueError, self._test_directfeed_4, True)
 	# ### def test_directfeed_4
 
-	def test_directfeed_5(self):
+	def _test_directfeed_5(self, raise_error):
 		""" check if the parser can work correctly with directly feed alphabet as range end """
 
-		ruleset = crontimesequence.parse_cronstring_minute(-3, 'abc')
+		ruleset = crontimesequence.parse_cronstring_minute(-3, 'abc', raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_directfeed_5
+	def test_directfeed_5_DEx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Disabled Exception Raising) """
+		self._test_directfeed_5(False)
+	def test_directfeed_5_REx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_directfeed_5, True)
 	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_minute
 
@@ -534,43 +684,73 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 class Test_parse_cronstring_hour(unittest.TestCase):
 	""" test the parse_cronstring_hour function """
 
-	def test_star(self):
+	def _test_star(self, raise_error):
 		""" check if the generated rule set of "*" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_hour("*")
+		ruleset = crontimesequence.parse_cronstring_hour("*", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 24)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, i, 39) for i in range(0, 24)], True)
+	# --- def _test_star
+	def test_star_DEx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Disabled Exception Raising) """
+		self._test_star(False)
+	def test_star_REx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Enabled Exception Raising) """
+		self._test_star(True)
+		# self.assertRaises(ValueError, self._test_star, True)
 	# ### def test_star
 
-	def test_range_1(self):
+	def _test_range_1(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_hour("6-24")
+		ruleset = crontimesequence.parse_cronstring_hour("6-24", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 18)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, i, 39) for i in range(6, 24)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, i, 39) for i in range(0, 6)], False)
+	# --- def _test_range_1
+	def test_range_1_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Disabled Exception Raising) """
+		self._test_range_1(False)
+	def test_range_1_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Enabled Exception Raising) """
+		self._test_range_1(True)
+		# self.assertRaises(ValueError, self._test_range_1, True)
 	# ### def test_range_1
 
-	def test_range_2(self):
+	def _test_range_2(self, raise_error):
 		""" check if the generated rule set of "X-" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("3-")
+		ruleset = crontimesequence.parse_cronstring_hour("3-", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_2
+	def test_range_2_DEx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_2(False)
+	def test_range_2_REx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_2, True)
 	# ### def test_range_2
 
-	def test_range_3(self):
+	def _test_range_3(self, raise_error):
 		""" check if the generated rule set of "-Y" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("-20")
+		ruleset = crontimesequence.parse_cronstring_hour("-20", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_3
+	def test_range_3_DEx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_3(False)
+	def test_range_3_REx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_3, True)
 	# ### def test_range_3
 
-	def test_divide_1(self):
+	def _test_divide_1(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
-		ruleset = crontimesequence.parse_cronstring_hour("*/5")
+		ruleset = crontimesequence.parse_cronstring_hour("*/5", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 5)
 
 		test_candidate_positive = []
@@ -584,12 +764,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_1
+	def test_divide_1_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Disabled Exception Raising) """
+		self._test_divide_1(False)
+	def test_divide_1_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Enabled Exception Raising) """
+		self._test_divide_1(True)
+		# self.assertRaises(ValueError, self._test_divide_1, True)
 	# ### def test_divide_1
 
-	def test_divide_2(self):
+	def _test_divide_2(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 
-		ruleset = crontimesequence.parse_cronstring_hour("3-19/3")
+		ruleset = crontimesequence.parse_cronstring_hour("3-19/3", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		test_candidate_positive = []
@@ -603,47 +791,90 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_2
+	def test_divide_2_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Disabled Exception Raising) """
+		self._test_divide_2(False)
+	def test_divide_2_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Enabled Exception Raising) """
+		self._test_divide_2(True)
+		# self.assertRaises(ValueError, self._test_divide_2, True)
 	# ### def test_divide_2
 
-	def test_divide_3(self):
+	def _test_divide_3(self, raise_error):
 		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("1-9/a")
+		ruleset = crontimesequence.parse_cronstring_hour("1-9/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 9)
+	# --- def _test_divide_3
+	def test_divide_3_DEx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_3(False)
+	def test_divide_3_REx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_3, True)
 	# ### def test_divide_3
 
-	def test_divide_4(self):
+	def _test_divide_4(self, raise_error):
 		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("1-b/a")
+		ruleset = crontimesequence.parse_cronstring_hour("1-b/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_4
+	def test_divide_4_DEx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_4(False)
+	def test_divide_4_REx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_4, True)
 	# ### def test_divide_4
 
-	def test_divide_5(self):
+	def _test_divide_5(self, raise_error):
 		""" check if the generated rule set of "X-/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("1-/a")
+		ruleset = crontimesequence.parse_cronstring_hour("1-/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_5
+	def test_divide_5_DEx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_5(False)
+	def test_divide_5_REx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_5, True)
 	# ### def test_divide_5
 
-	def test_divide_6(self):
+	def _test_divide_6(self, raise_error):
 		""" check if the generated rule set of "/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("/a")
+		ruleset = crontimesequence.parse_cronstring_hour("/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_6
+	def test_divide_6_DEx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_6(False)
+	def test_divide_6_REx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_6, True)
 	# ### def test_divide_6
 
-	def test_divide_7(self):
+	def _test_divide_7(self, raise_error):
 		""" check if the generated rule set of "/" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_hour("/")
+		ruleset = crontimesequence.parse_cronstring_hour("/", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_7
+	def test_divide_7_DEx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_7(False)
+	def test_divide_7_REx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_7, True)
 	# ### def test_divide_7
 
-	def test_comma_1(self):
+	def _test_comma_1(self, raise_error):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_hour("3,7,11,16,20,23")
+		ruleset = crontimesequence.parse_cronstring_hour("3,7,11,16,20,23", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		positive_dateset = []
@@ -657,12 +888,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_1
+	def test_comma_1_DEx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_1(False)
+	def test_comma_1_REx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Enabled Exception Raising) """
+		self._test_comma_1(True)
+		# self.assertRaises(ValueError, self._test_comma_1, True)
 	# ### def test_comma_1
 
-	def test_comma_2(self):
+	def _test_comma_2(self, raise_error):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_hour(",3,7,11,,16,20,23,")
+		ruleset = crontimesequence.parse_cronstring_hour(",3,7,11,,16,20,23,", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		positive_dateset = []
@@ -676,21 +915,35 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_2
+	def test_comma_2_DEx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_2(False)
+	def test_comma_2_REx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_2, True)
 	# ### def test_comma_2
 
-	def test_comma_3(self):
+	def _test_comma_3(self, raise_error):
 		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
 
-		ruleset = crontimesequence.parse_cronstring_hour( ",".join([str(v) for v in range(-3, 90)]) )
+		ruleset = crontimesequence.parse_cronstring_hour( ",".join([str(v) for v in range(-3, 90)]) , raise_error=raise_error)
 		self.assertEqual(len(ruleset), 24)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 6, 30, i, 39) for i in range(0, 24)], True)
+	# --- def _test_comma_3
+	def test_comma_3_DEx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Disabled Exception Raising) """
+		self._test_comma_3(False)
+	def test_comma_3_REx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_3, True)
 	# ### def test_comma_3
 
-	def test_hybrid(self):
+	def _test_hybrid(self, raise_error):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_hour("*/5, 5-15/2, 10,11,12, 17-23/3")
+		ruleset = crontimesequence.parse_cronstring_hour("*/5, 5-15/2, 10,11,12, 17-23/3", raise_error=raise_error)
 
 		positive_dateset = []
 		negative_dateset = []
@@ -703,12 +956,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_hybrid
+	def test_hybrid_DEx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Disabled Exception Raising) """
+		self._test_hybrid(False)
+	def test_hybrid_REx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Enabled Exception Raising) """
+		self._test_hybrid(True)
+		# self.assertRaises(ValueError, self._test_hybrid, True)
 	# ### def test_hybrid
 
-	def test_directfeed_1(self):
+	def _test_directfeed_1(self, raise_error):
 		""" check if the parser can work correctly with directly feed integer """
 
-		ruleset = crontimesequence.parse_cronstring_hour(6)
+		ruleset = crontimesequence.parse_cronstring_hour(6, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -721,12 +982,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_1
+	def test_directfeed_1_DEx(self):
+		""" check if the parser can work correctly with directly feed integer  (Disabled Exception Raising) """
+		self._test_directfeed_1(False)
+	def test_directfeed_1_REx(self):
+		""" check if the parser can work correctly with directly feed integer  (Enabled Exception Raising) """
+		self._test_directfeed_1(True)
+		# self.assertRaises(ValueError, self._test_directfeed_1, True)
 	# ### def test_directfeed_1
 
-	def test_directfeed_2(self):
+	def _test_directfeed_2(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value True """
 
-		ruleset = crontimesequence.parse_cronstring_hour(True)
+		ruleset = crontimesequence.parse_cronstring_hour(True, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -739,12 +1008,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_2
+	def test_directfeed_2_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Disabled Exception Raising) """
+		self._test_directfeed_2(False)
+	def test_directfeed_2_REx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Enabled Exception Raising) """
+		self._test_directfeed_2(True)
+		# self.assertRaises(ValueError, self._test_directfeed_2, True)
 	# ### def test_directfeed_2
 
-	def test_directfeed_3(self):
+	def _test_directfeed_3(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value False """
 
-		ruleset = crontimesequence.parse_cronstring_hour(False)
+		ruleset = crontimesequence.parse_cronstring_hour(False, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -757,12 +1034,20 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_3
+	def test_directfeed_3_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Disabled Exception Raising) """
+		self._test_directfeed_3(False)
+	def test_directfeed_3_REx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Enabled Exception Raising) """
+		self._test_directfeed_3(True)
+		# self.assertRaises(ValueError, self._test_directfeed_3, True)
 	# ### def test_directfeed_3
 
-	def test_directfeed_4(self):
+	def _test_directfeed_4(self, raise_error):
 		""" check if the parser can work correctly with directly feed negative range start """
 
-		ruleset = crontimesequence.parse_cronstring_hour(-3, 10)
+		ruleset = crontimesequence.parse_cronstring_hour(-3, 10, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 11)
 
 		test_candidate_positive = []
@@ -775,13 +1060,28 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_4
+	def test_directfeed_4_DEx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Disabled Exception Raising) """
+		self._test_directfeed_4(False)
+	def test_directfeed_4_REx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Enabled Exception Raising) """
+		self._test_directfeed_4(True)
+		# self.assertRaises(ValueError, self._test_directfeed_4, True)
 	# ### def test_directfeed_4
 
-	def test_directfeed_5(self):
+	def _test_directfeed_5(self, raise_error):
 		""" check if the parser can work correctly with directly feed alphabet as range end """
 
-		ruleset = crontimesequence.parse_cronstring_hour(-3, 'abc')
+		ruleset = crontimesequence.parse_cronstring_hour(-3, 'abc', raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_directfeed_5
+	def test_directfeed_5_DEx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Disabled Exception Raising) """
+		self._test_directfeed_5(False)
+	def test_directfeed_5_REx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_directfeed_5, True)
 	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_hour
 
@@ -789,53 +1089,91 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 class Test_parse_cronstring_day(unittest.TestCase):
 	""" test the parse_cronstring_day function """
 
-	def test_star(self):
+	def _test_star(self, raise_error):
 		""" check if the generated rule set of "*" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day("*")
+		ruleset = crontimesequence.parse_cronstring_day("*", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 31)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# --- def _test_star
+	def test_star_DEx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Disabled Exception Raising) """
+		self._test_star(False)
+	def test_star_REx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Enabled Exception Raising) """
+		self._test_star(True)
+		# self.assertRaises(ValueError, self._test_star, True)
 	# ### def test_star
 
-	def test_range_1(self):
+	def _test_range_1(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day("6-31")
+		ruleset = crontimesequence.parse_cronstring_day("6-31", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 26)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(6, 32)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 6)], False)
+	# --- def _test_range_1
+	def test_range_1_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Disabled Exception Raising) """
+		self._test_range_1(False)
+	def test_range_1_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Enabled Exception Raising) """
+		self._test_range_1(True)
+		# self.assertRaises(ValueError, self._test_range_1, True)
 	# ### def test_range_1
 
-	def test_range_2(self):
+	def _test_range_2(self, raise_error):
 		""" check if the generated rule set of "X-" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("3-")
+		ruleset = crontimesequence.parse_cronstring_day("3-", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_2
+	def test_range_2_DEx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_2(False)
+	def test_range_2_REx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_2, True)
 	# ### def test_range_2
 
-	def test_range_3(self):
+	def _test_range_3(self, raise_error):
 		""" check if the generated rule set of "-Y" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("-20")
+		ruleset = crontimesequence.parse_cronstring_day("-20", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_3
+	def test_range_3_DEx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_3(False)
+	def test_range_3_REx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_3, True)
 	# ### def test_range_3
 
-	def test_range_4(self):
+	def _test_range_4(self, raise_error):
 		""" check if the generated rule set of "X-Y" with negative X have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day("0-10")
+		ruleset = crontimesequence.parse_cronstring_day("0-10", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 10)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 11)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(11, 32)], False)
+	# --- def _test_range_4
+	def test_range_4_DEx(self):
+		""" check if the generated rule set of "X-Y" with negative X have correct rule items  (Disabled Exception Raising) """
+		self._test_range_4(False)
+	def test_range_4_REx(self):
+		""" check if the generated rule set of "X-Y" with negative X have correct rule items  (Enabled Exception Raising) """
+		self._test_range_4(True)
+		# self.assertRaises(ValueError, self._test_range_4, True)
 	# ### def test_range_4
 
-	def test_divide_1(self):
+	def _test_divide_1(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
-		ruleset = crontimesequence.parse_cronstring_day("*/5")
+		ruleset = crontimesequence.parse_cronstring_day("*/5", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 7)
 
 		test_candidate_positive = []
@@ -849,12 +1187,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_1
+	def test_divide_1_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Disabled Exception Raising) """
+		self._test_divide_1(False)
+	def test_divide_1_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Enabled Exception Raising) """
+		self._test_divide_1(True)
+		# self.assertRaises(ValueError, self._test_divide_1, True)
 	# ### def test_divide_1
 
-	def test_divide_2(self):
+	def _test_divide_2(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 
-		ruleset = crontimesequence.parse_cronstring_day("3-19/3")
+		ruleset = crontimesequence.parse_cronstring_day("3-19/3", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
 
 		test_candidate_positive = []
@@ -868,47 +1214,90 @@ class Test_parse_cronstring_day(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_2
+	def test_divide_2_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Disabled Exception Raising) """
+		self._test_divide_2(False)
+	def test_divide_2_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Enabled Exception Raising) """
+		self._test_divide_2(True)
+		# self.assertRaises(ValueError, self._test_divide_2, True)
 	# ### def test_divide_2
 
-	def test_divide_3(self):
+	def _test_divide_3(self, raise_error):
 		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("1-9/a")
+		ruleset = crontimesequence.parse_cronstring_day("1-9/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 9)
+	# --- def _test_divide_3
+	def test_divide_3_DEx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_3(False)
+	def test_divide_3_REx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_3, True)
 	# ### def test_divide_3
 
-	def test_divide_4(self):
+	def _test_divide_4(self, raise_error):
 		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("1-b/a")
+		ruleset = crontimesequence.parse_cronstring_day("1-b/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_4
+	def test_divide_4_DEx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_4(False)
+	def test_divide_4_REx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_4, True)
 	# ### def test_divide_4
 
-	def test_divide_5(self):
+	def _test_divide_5(self, raise_error):
 		""" check if the generated rule set of "X-/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("1-/a")
+		ruleset = crontimesequence.parse_cronstring_day("1-/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_5
+	def test_divide_5_DEx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_5(False)
+	def test_divide_5_REx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_5, True)
 	# ### def test_divide_5
 
-	def test_divide_6(self):
+	def _test_divide_6(self, raise_error):
 		""" check if the generated rule set of "/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("/a")
+		ruleset = crontimesequence.parse_cronstring_day("/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_6
+	def test_divide_6_DEx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_6(False)
+	def test_divide_6_REx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_6, True)
 	# ### def test_divide_6
 
-	def test_divide_7(self):
+	def _test_divide_7(self, raise_error):
 		""" check if the generated rule set of "/" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("/")
+		ruleset = crontimesequence.parse_cronstring_day("/", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_7
+	def test_divide_7_DEx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_7(False)
+	def test_divide_7_REx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_7, True)
 	# ### def test_divide_7
 
-	def test_comma_1(self):
+	def _test_comma_1(self, raise_error):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day("3,7,11,16,20,23,31")
+		ruleset = crontimesequence.parse_cronstring_day("3,7,11,16,20,23,31", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 7)
 
 		positive_dateset = []
@@ -922,12 +1311,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_1
+	def test_comma_1_DEx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_1(False)
+	def test_comma_1_REx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Enabled Exception Raising) """
+		self._test_comma_1(True)
+		# self.assertRaises(ValueError, self._test_comma_1, True)
 	# ### def test_comma_1
 
-	def test_comma_2(self):
+	def _test_comma_2(self, raise_error):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day(",3,7,11,,16,20,23, 31,")
+		ruleset = crontimesequence.parse_cronstring_day(",3,7,11,,16,20,23, 31,", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 7)
 
 		positive_dateset = []
@@ -941,21 +1338,35 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_2
+	def test_comma_2_DEx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_2(False)
+	def test_comma_2_REx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_2, True)
 	# ### def test_comma_2
 
-	def test_comma_3(self):
+	def _test_comma_3(self, raise_error):
 		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
 
-		ruleset = crontimesequence.parse_cronstring_day( ",".join([str(v) for v in range(-3, 90)]) )
+		ruleset = crontimesequence.parse_cronstring_day( ",".join([str(v) for v in range(-3, 90)]) , raise_error=raise_error)
 		self.assertEqual(len(ruleset), 31)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# --- def _test_comma_3
+	def test_comma_3_DEx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Disabled Exception Raising) """
+		self._test_comma_3(False)
+	def test_comma_3_REx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_3, True)
 	# ### def test_comma_3
 
-	def test_last_day_of_month(self):
+	def _test_last_day_of_month(self, raise_error):
 		""" check if the last day of month rule can work correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("L")
+		ruleset = crontimesequence.parse_cronstring_day("L", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		delta_1_day = datetime.timedelta(days=1)
@@ -976,12 +1387,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 						is_rule_dateset_compatible(self, ruleset, (candidate_val,), False)
 
 					candidate_val = candidate_val + delta_1_day
+	# --- def _test_last_day_of_month
+	def test_last_day_of_month_DEx(self):
+		""" check if the last day of month rule can work correctly  (Disabled Exception Raising) """
+		self._test_last_day_of_month(False)
+	def test_last_day_of_month_REx(self):
+		""" check if the last day of month rule can work correctly  (Enabled Exception Raising) """
+		self._test_last_day_of_month(True)
+		# self.assertRaises(ValueError, self._test_last_day_of_month, True)
 	# ### def test_last_day_of_month
 
-	def test_nearest_workday_1(self):
+	def _test_nearest_workday_1(self, raise_error):
 		""" check if "xW" syntax can work correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("1W")
+		ruleset = crontimesequence.parse_cronstring_day("1W", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		positive_dateset = []
@@ -995,12 +1414,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_nearest_workday_1
+	def test_nearest_workday_1_DEx(self):
+		""" check if "xW" syntax can work correctly  (Disabled Exception Raising) """
+		self._test_nearest_workday_1(False)
+	def test_nearest_workday_1_REx(self):
+		""" check if "xW" syntax can work correctly  (Enabled Exception Raising) """
+		self._test_nearest_workday_1(True)
+		# self.assertRaises(ValueError, self._test_nearest_workday_1, True)
 	# ### def test_nearest_workday_1
 
-	def test_nearest_workday_2(self):
+	def _test_nearest_workday_2(self, raise_error):
 		""" check if "xW,yW,zW" syntax can work correctly """
 
-		ruleset = crontimesequence.parse_cronstring_day("1W,22W,18W")
+		ruleset = crontimesequence.parse_cronstring_day("1W,22W,18W", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		positive_dateset = []
@@ -1014,33 +1441,64 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_nearest_workday_2
+	def test_nearest_workday_2_DEx(self):
+		""" check if "xW,yW,zW" syntax can work correctly  (Disabled Exception Raising) """
+		self._test_nearest_workday_2(False)
+	def test_nearest_workday_2_REx(self):
+		""" check if "xW,yW,zW" syntax can work correctly  (Enabled Exception Raising) """
+		self._test_nearest_workday_2(True)
+		# self.assertRaises(ValueError, self._test_nearest_workday_2, True)
 	# ### def test_nearest_workday_2
 
-	def test_nearest_workday_3(self):
+	def _test_nearest_workday_3(self, raise_error):
 		""" check if "errW" syntax can handled correctly with unparsable err value """
 
-		ruleset = crontimesequence.parse_cronstring_day("abcW")
+		ruleset = crontimesequence.parse_cronstring_day("abcW", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nearest_workday_3
+	def test_nearest_workday_3_DEx(self):
+		""" check if "errW" syntax can handled correctly with unparsable err value  (Disabled Exception Raising) """
+		self._test_nearest_workday_3(False)
+	def test_nearest_workday_3_REx(self):
+		""" check if "errW" syntax can handled correctly with unparsable err value  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_nearest_workday_3, True)
 	# ### def test_nearest_workday_3
 
-	def test_nearest_workday_4(self):
+	def _test_nearest_workday_4(self, raise_error):
 		""" check if "errW" syntax can handled correctly with err out of range (< 1) """
 
-		ruleset = crontimesequence.parse_cronstring_day("0W")
+		ruleset = crontimesequence.parse_cronstring_day("0W", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nearest_workday_4
+	def test_nearest_workday_4_DEx(self):
+		""" check if "errW" syntax can handled correctly with err out of range (< 1)  (Disabled Exception Raising) """
+		self._test_nearest_workday_4(False)
+	def test_nearest_workday_4_REx(self):
+		""" check if "errW" syntax can handled correctly with err out of range (< 1)  (Enabled Exception Raising) """
+		self._test_nearest_workday_4(True)
+		# self.assertRaises(ValueError, self._test_nearest_workday_4, True)
 	# ### def test_nearest_workday_4
 
-	def test_nearest_workday_5(self):
+	def _test_nearest_workday_5(self, raise_error):
 		""" check if "errW" syntax can handled correctly with err out of range (> 31) """
 
-		ruleset = crontimesequence.parse_cronstring_day("99W")
+		ruleset = crontimesequence.parse_cronstring_day("99W", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nearest_workday_5
+	def test_nearest_workday_5_DEx(self):
+		""" check if "errW" syntax can handled correctly with err out of range (> 31)  (Disabled Exception Raising) """
+		self._test_nearest_workday_5(False)
+	def test_nearest_workday_5_REx(self):
+		""" check if "errW" syntax can handled correctly with err out of range (> 31)  (Enabled Exception Raising) """
+		self._test_nearest_workday_5(True)
+		# self.assertRaises(ValueError, self._test_nearest_workday_5, True)
 	# ### def test_nearest_workday_5
 
-	def test_hybrid(self):
+	def _test_hybrid(self, raise_error):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_day("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
+		ruleset = crontimesequence.parse_cronstring_day("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,", raise_error=raise_error)
 
 		positive_dateset = []
 		negative_dateset = []
@@ -1053,12 +1511,19 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_hybrid
+	def test_hybrid_DEx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Disabled Exception Raising) """
+		self._test_hybrid(False)
+	def test_hybrid_REx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_hybrid, True)
 	# ### def test_hybrid
 
-	def test_directfeed_1(self):
+	def _test_directfeed_1(self, raise_error):
 		""" check if the parser can work correctly with directly feed integer """
 
-		ruleset = crontimesequence.parse_cronstring_day(6)
+		ruleset = crontimesequence.parse_cronstring_day(6, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1071,12 +1536,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_1
+	def test_directfeed_1_DEx(self):
+		""" check if the parser can work correctly with directly feed integer  (Disabled Exception Raising) """
+		self._test_directfeed_1(False)
+	def test_directfeed_1_REx(self):
+		""" check if the parser can work correctly with directly feed integer  (Enabled Exception Raising) """
+		self._test_directfeed_1(True)
+		# self.assertRaises(ValueError, self._test_directfeed_1, True)
 	# ### def test_directfeed_1
 
-	def test_directfeed_2(self):
+	def _test_directfeed_2(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value True """
 
-		ruleset = crontimesequence.parse_cronstring_day(True)
+		ruleset = crontimesequence.parse_cronstring_day(True, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1089,12 +1562,20 @@ class Test_parse_cronstring_day(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_2
+	def test_directfeed_2_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Disabled Exception Raising) """
+		self._test_directfeed_2(False)
+	def test_directfeed_2_REx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Enabled Exception Raising) """
+		self._test_directfeed_2(True)
+		# self.assertRaises(ValueError, self._test_directfeed_2, True)
 	# ### def test_directfeed_2
 
-	def test_directfeed_3(self):
+	def _test_directfeed_3(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value False """
 
-		ruleset = crontimesequence.parse_cronstring_day(False)
+		ruleset = crontimesequence.parse_cronstring_day(False, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
 
 		test_candidate_positive = []
@@ -1107,6 +1588,14 @@ class Test_parse_cronstring_day(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_3
+	def test_directfeed_3_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Disabled Exception Raising) """
+		self._test_directfeed_3(False)
+	def test_directfeed_3_REx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Enabled Exception Raising) """
+		self._test_directfeed_3(True)
+		# self.assertRaises(ValueError, self._test_directfeed_3, True)
 	# ### def test_directfeed_3
 # ### class Test_parse_cronstring_day
 
@@ -1114,53 +1603,91 @@ class Test_parse_cronstring_day(unittest.TestCase):
 class Test_parse_cronstring_month(unittest.TestCase):
 	""" test the parse_cronstring_month function """
 
-	def test_star(self):
+	def _test_star(self, raise_error):
 		""" check if the generated rule set of "*" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month("*")
+		ruleset = crontimesequence.parse_cronstring_month("*", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 12)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(1, 13)], True)
+	# --- def _test_star
+	def test_star_DEx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Disabled Exception Raising) """
+		self._test_star(False)
+	def test_star_REx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Enabled Exception Raising) """
+		self._test_star(True)
+		# self.assertRaises(ValueError, self._test_star, True)
 	# ### def test_star
 
-	def test_range_1(self):
+	def _test_range_1(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month("6-12")
+		ruleset = crontimesequence.parse_cronstring_month("6-12", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 7)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(6, 13)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(1, 6)], False)
+	# --- def _test_range_1
+	def test_range_1_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Disabled Exception Raising) """
+		self._test_range_1(False)
+	def test_range_1_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Enabled Exception Raising) """
+		self._test_range_1(True)
+		# self.assertRaises(ValueError, self._test_range_1, True)
 	# ### def test_range_1
 
-	def test_range_2(self):
+	def _test_range_2(self, raise_error):
 		""" check if the generated rule set of "X-" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("3-")
+		ruleset = crontimesequence.parse_cronstring_month("3-", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_2
+	def test_range_2_DEx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_2(False)
+	def test_range_2_REx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_2, True)
 	# ### def test_range_2
 
-	def test_range_3(self):
+	def _test_range_3(self, raise_error):
 		""" check if the generated rule set of "-Y" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("-12")
+		ruleset = crontimesequence.parse_cronstring_month("-12", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_3
+	def test_range_3_DEx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_3(False)
+	def test_range_3_REx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_3, True)
 	# ### def test_range_3
 
-	def test_range_4(self):
+	def _test_range_4(self, raise_error):
 		""" check if the generated rule set of "X-Y" with negative X have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month("0-10")
+		ruleset = crontimesequence.parse_cronstring_month("0-10", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 10)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(1, 11)], True)
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(11, 13)], False)
+	# --- def _test_range_4
+	def test_range_4_DEx(self):
+		""" check if the generated rule set of "X-Y" with negative X have correct rule items  (Disabled Exception Raising) """
+		self._test_range_4(False)
+	def test_range_4_REx(self):
+		""" check if the generated rule set of "X-Y" with negative X have correct rule items  (Enabled Exception Raising) """
+		self._test_range_4(True)
+		# self.assertRaises(ValueError, self._test_range_4, True)
 	# ### def test_range_4
 
-	def test_divide_1(self):
+	def _test_divide_1(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
-		ruleset = crontimesequence.parse_cronstring_month("*/5")
+		ruleset = crontimesequence.parse_cronstring_month("*/5", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1174,12 +1701,20 @@ class Test_parse_cronstring_month(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_1
+	def test_divide_1_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Disabled Exception Raising) """
+		self._test_divide_1(False)
+	def test_divide_1_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Enabled Exception Raising) """
+		self._test_divide_1(True)
+		# self.assertRaises(ValueError, self._test_divide_1, True)
 	# ### def test_divide_1
 
-	def test_divide_2(self):
+	def _test_divide_2(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 
-		ruleset = crontimesequence.parse_cronstring_month("3-10/3")
+		ruleset = crontimesequence.parse_cronstring_month("3-10/3", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1193,47 +1728,90 @@ class Test_parse_cronstring_month(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_2
+	def test_divide_2_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Disabled Exception Raising) """
+		self._test_divide_2(False)
+	def test_divide_2_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Enabled Exception Raising) """
+		self._test_divide_2(True)
+		# self.assertRaises(ValueError, self._test_divide_2, True)
 	# ### def test_divide_2
 
-	def test_divide_3(self):
+	def _test_divide_3(self, raise_error):
 		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("1-9/a")
+		ruleset = crontimesequence.parse_cronstring_month("1-9/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 9)
+	# --- def _test_divide_3
+	def test_divide_3_DEx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_3(False)
+	def test_divide_3_REx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_3, True)
 	# ### def test_divide_3
 
-	def test_divide_4(self):
+	def _test_divide_4(self, raise_error):
 		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("1-b/a")
+		ruleset = crontimesequence.parse_cronstring_month("1-b/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_4
+	def test_divide_4_DEx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_4(False)
+	def test_divide_4_REx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_4, True)
 	# ### def test_divide_4
 
-	def test_divide_5(self):
+	def _test_divide_5(self, raise_error):
 		""" check if the generated rule set of "X-/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("1-/a")
+		ruleset = crontimesequence.parse_cronstring_month("1-/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_5
+	def test_divide_5_DEx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_5(False)
+	def test_divide_5_REx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_5, True)
 	# ### def test_divide_5
 
-	def test_divide_6(self):
+	def _test_divide_6(self, raise_error):
 		""" check if the generated rule set of "/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("/a")
+		ruleset = crontimesequence.parse_cronstring_month("/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_6
+	def test_divide_6_DEx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_6(False)
+	def test_divide_6_REx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_6, True)
 	# ### def test_divide_6
 
-	def test_divide_7(self):
+	def _test_divide_7(self, raise_error):
 		""" check if the generated rule set of "/" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_month("/")
+		ruleset = crontimesequence.parse_cronstring_month("/", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_7
+	def test_divide_7_DEx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_7(False)
+	def test_divide_7_REx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_7, True)
 	# ### def test_divide_7
 
-	def test_comma_1(self):
+	def _test_comma_1(self, raise_error):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month("3,7,11")
+		ruleset = crontimesequence.parse_cronstring_month("3,7,11", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		positive_dateset = []
@@ -1247,12 +1825,20 @@ class Test_parse_cronstring_month(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_1
+	def test_comma_1_DEx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_1(False)
+	def test_comma_1_REx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Enabled Exception Raising) """
+		self._test_comma_1(True)
+		# self.assertRaises(ValueError, self._test_comma_1, True)
 	# ### def test_comma_1
 
-	def test_comma_2(self):
+	def _test_comma_2(self, raise_error):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month(",3 ,7,11,, ,")
+		ruleset = crontimesequence.parse_cronstring_month(",3 ,7,11,, ,", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		positive_dateset = []
@@ -1266,21 +1852,35 @@ class Test_parse_cronstring_month(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_comma_2
+	def test_comma_2_DEx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_2(False)
+	def test_comma_2_REx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_2, True)
 	# ### def test_comma_2
 
-	def test_comma_3(self):
+	def _test_comma_3(self, raise_error):
 		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
 
-		ruleset = crontimesequence.parse_cronstring_month( ",".join([str(v) for v in range(-3, 90)]) )
+		ruleset = crontimesequence.parse_cronstring_month( ",".join([str(v) for v in range(-3, 90)]) , raise_error=raise_error)
 		self.assertEqual(len(ruleset), 12)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, i, 3, 9, 39) for i in range(1, 13)], True)
+	# --- def _test_comma_3
+	def test_comma_3_DEx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Disabled Exception Raising) """
+		self._test_comma_3(False)
+	def test_comma_3_REx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_3, True)
 	# ### def test_comma_3
 
-	def test_hybrid(self):
+	def _test_hybrid(self, raise_error):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_month("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,")
+		ruleset = crontimesequence.parse_cronstring_month("*/9, 5-15/2, 10,11,12, 17-23/3, 28-32,", raise_error=raise_error)
 
 		positive_dateset = []
 		negative_dateset = []
@@ -1293,12 +1893,19 @@ class Test_parse_cronstring_month(unittest.TestCase):
 
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_hybrid
+	def test_hybrid_DEx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Disabled Exception Raising) """
+		self._test_hybrid(False)
+	def test_hybrid_REx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_hybrid, True)
 	# ### def test_hybrid
 
-	def test_directfeed_1(self):
+	def _test_directfeed_1(self, raise_error):
 		""" check if the parser can work correctly with directly feed integer """
 
-		ruleset = crontimesequence.parse_cronstring_month(6)
+		ruleset = crontimesequence.parse_cronstring_month(6, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1311,12 +1918,20 @@ class Test_parse_cronstring_month(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_1
+	def test_directfeed_1_DEx(self):
+		""" check if the parser can work correctly with directly feed integer  (Disabled Exception Raising) """
+		self._test_directfeed_1(False)
+	def test_directfeed_1_REx(self):
+		""" check if the parser can work correctly with directly feed integer  (Enabled Exception Raising) """
+		self._test_directfeed_1(True)
+		# self.assertRaises(ValueError, self._test_directfeed_1, True)
 	# ### def test_directfeed_1
 
-	def test_directfeed_2(self):
+	def _test_directfeed_2(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value True """
 
-		ruleset = crontimesequence.parse_cronstring_month(True)
+		ruleset = crontimesequence.parse_cronstring_month(True, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1329,12 +1944,20 @@ class Test_parse_cronstring_month(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_2
+	def test_directfeed_2_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Disabled Exception Raising) """
+		self._test_directfeed_2(False)
+	def test_directfeed_2_REx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Enabled Exception Raising) """
+		self._test_directfeed_2(True)
+		# self.assertRaises(ValueError, self._test_directfeed_2, True)
 	# ### def test_directfeed_2
 
-	def test_directfeed_3(self):
+	def _test_directfeed_3(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value False """
 
-		ruleset = crontimesequence.parse_cronstring_month(False)
+		ruleset = crontimesequence.parse_cronstring_month(False, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
 
 		test_candidate_positive = []
@@ -1344,6 +1967,14 @@ class Test_parse_cronstring_month(unittest.TestCase):
 			test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_3
+	def test_directfeed_3_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Disabled Exception Raising) """
+		self._test_directfeed_3(False)
+	def test_directfeed_3_REx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Enabled Exception Raising) """
+		self._test_directfeed_3(True)
+		# self.assertRaises(ValueError, self._test_directfeed_3, True)
 	# ### def test_directfeed_3
 # ### class Test_parse_cronstring_month
 
@@ -1351,19 +1982,27 @@ class Test_parse_cronstring_month(unittest.TestCase):
 class Test_parse_cronstring_weekday(unittest.TestCase):
 	""" test the parse_cronstring_weekday function """
 
-	def test_star(self):
+	def _test_star(self, raise_error):
 		""" check if the generated rule set of "*" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("*")
+		ruleset = crontimesequence.parse_cronstring_weekday("*", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 7)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# --- def _test_star
+	def test_star_DEx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Disabled Exception Raising) """
+		self._test_star(False)
+	def test_star_REx(self):
+		""" check if the generated rule set of "*" have correct rule items  (Enabled Exception Raising) """
+		self._test_star(True)
+		# self.assertRaises(ValueError, self._test_star, True)
 	# ### def test_star
 
-	def test_range_1(self):
+	def _test_range_1(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3-5")
+		ruleset = crontimesequence.parse_cronstring_weekday("3-5", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1377,12 +2016,20 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_range_1
+	def test_range_1_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Disabled Exception Raising) """
+		self._test_range_1(False)
+	def test_range_1_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items  (Enabled Exception Raising) """
+		self._test_range_1(True)
+		# self.assertRaises(ValueError, self._test_range_1, True)
 	# ### def test_range_1
 
-	def test_range_2(self):
+	def _test_range_2(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as start """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("0-2")
+		ruleset = crontimesequence.parse_cronstring_weekday("0-2", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1396,12 +2043,20 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_range_2
+	def test_range_2_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as start  (Disabled Exception Raising) """
+		self._test_range_2(False)
+	def test_range_2_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as start  (Enabled Exception Raising) """
+		self._test_range_2(True)
+		# self.assertRaises(ValueError, self._test_range_2, True)
 	# ### def test_range_2
 
-	def test_range_3(self):
+	def _test_range_3(self, raise_error):
 		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as end """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("5-7")
+		ruleset = crontimesequence.parse_cronstring_weekday("5-7", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1415,26 +2070,48 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_range_3
+	def test_range_3_DEx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as end  (Disabled Exception Raising) """
+		self._test_range_3(False)
+	def test_range_3_REx(self):
+		""" check if the generated rule set of "X-Y" have correct rule items with Sunday as end  (Enabled Exception Raising) """
+		self._test_range_3(True)
+		# self.assertRaises(ValueError, self._test_range_3, True)
 	# ### def test_range_3
 
-	def test_range_4(self):
+	def _test_range_4(self, raise_error):
 		""" check if the generated rule set of "X-" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3-")
+		ruleset = crontimesequence.parse_cronstring_weekday("3-", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_4
+	def test_range_4_DEx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_4(False)
+	def test_range_4_REx(self):
+		""" check if the generated rule set of "X-" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_4, True)
 	# ### def test_range_4
 
-	def test_range_5(self):
+	def _test_range_5(self, raise_error):
 		""" check if the generated rule set of "-Y" is ignored correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("-7")
+		ruleset = crontimesequence.parse_cronstring_weekday("-7", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_range_5
+	def test_range_5_DEx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Disabled Exception Raising) """
+		self._test_range_5(False)
+	def test_range_5_REx(self):
+		""" check if the generated rule set of "-Y" is ignored correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_range_5, True)
 	# ### def test_range_5
 
-	def test_divide_1(self):
+	def _test_divide_1(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with star """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("*/2")
+		ruleset = crontimesequence.parse_cronstring_weekday("*/2", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 4)
 
 		test_candidate_positive = []
@@ -1448,12 +2125,20 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_1
+	def test_divide_1_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Disabled Exception Raising) """
+		self._test_divide_1(False)
+	def test_divide_1_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with star  (Enabled Exception Raising) """
+		self._test_divide_1(True)
+		# self.assertRaises(ValueError, self._test_divide_1, True)
 	# ### def test_divide_1
 
-	def test_divide_2(self):
+	def _test_divide_2(self, raise_error):
 		""" check if the generated rule set of "X-Y/Z" have correct rule items with range """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("0-7/3")
+		ruleset = crontimesequence.parse_cronstring_weekday("0-7/3", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1467,47 +2152,90 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_divide_2
+	def test_divide_2_DEx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Disabled Exception Raising) """
+		self._test_divide_2(False)
+	def test_divide_2_REx(self):
+		""" check if the generated rule set of "X-Y/Z" have correct rule items with range  (Enabled Exception Raising) """
+		self._test_divide_2(True)
+		# self.assertRaises(ValueError, self._test_divide_2, True)
 	# ### def test_divide_2
 
-	def test_divide_3(self):
+	def _test_divide_3(self, raise_error):
 		""" check if the generated rule set of "X-Y/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("1-6/a")
+		ruleset = crontimesequence.parse_cronstring_weekday("1-6/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 6)
+	# --- def _test_divide_3
+	def test_divide_3_DEx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_3(False)
+	def test_divide_3_REx(self):
+		""" check if the generated rule set of "X-Y/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_3, True)
 	# ### def test_divide_3
 
-	def test_divide_4(self):
+	def _test_divide_4(self, raise_error):
 		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("1-b/a")
+		ruleset = crontimesequence.parse_cronstring_weekday("1-b/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_4
+	def test_divide_4_DEx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_4(False)
+	def test_divide_4_REx(self):
+		""" check if the generated rule set of "X-ERR/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_4, True)
 	# ### def test_divide_4
 
-	def test_divide_5(self):
+	def _test_divide_5(self, raise_error):
 		""" check if the generated rule set of "X-/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("1-/a")
+		ruleset = crontimesequence.parse_cronstring_weekday("1-/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_5
+	def test_divide_5_DEx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_5(False)
+	def test_divide_5_REx(self):
+		""" check if the generated rule set of "X-/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_5, True)
 	# ### def test_divide_5
 
-	def test_divide_6(self):
+	def _test_divide_6(self, raise_error):
 		""" check if the generated rule set of "/ERR" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("/a")
+		ruleset = crontimesequence.parse_cronstring_weekday("/a", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_6
+	def test_divide_6_DEx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_6(False)
+	def test_divide_6_REx(self):
+		""" check if the generated rule set of "/ERR" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_6, True)
 	# ### def test_divide_6
 
-	def test_divide_7(self):
+	def _test_divide_7(self, raise_error):
 		""" check if the generated rule set of "/" can be handled correctly """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("/")
+		ruleset = crontimesequence.parse_cronstring_weekday("/", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_divide_7
+	def test_divide_7_DEx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Disabled Exception Raising) """
+		self._test_divide_7(False)
+	def test_divide_7_REx(self):
+		""" check if the generated rule set of "/" can be handled correctly  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_divide_7, True)
 	# ### def test_divide_7
 
-	def test_comma_1(self):
+	def _test_comma_1(self, raise_error):
 		""" check if the generated rule set of "Z,Y,X" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3,7,11")
+		ruleset = crontimesequence.parse_cronstring_weekday("3,7,11", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 2)
 
 		test_candidate_positive = []
@@ -1521,12 +2249,20 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_comma_1
+	def test_comma_1_DEx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_1(False)
+	def test_comma_1_REx(self):
+		""" check if the generated rule set of "Z,Y,X" have correct rule items  (Enabled Exception Raising) """
+		self._test_comma_1(True)
+		# self.assertRaises(ValueError, self._test_comma_1, True)
 	# ### def test_comma_1
 
-	def test_comma_2(self):
+	def _test_comma_2(self, raise_error):
 		""" check if the generated rule set of "Z,Y," have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(",3 ,7,11,, ,")
+		ruleset = crontimesequence.parse_cronstring_weekday(",3 ,7,11,, ,", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 2)
 
 		test_candidate_positive = []
@@ -1540,21 +2276,35 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_comma_2
+	def test_comma_2_DEx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Disabled Exception Raising) """
+		self._test_comma_2(False)
+	def test_comma_2_REx(self):
+		""" check if the generated rule set of "Z,Y," have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_2, True)
 	# ### def test_comma_2
 
-	def test_comma_3(self):
+	def _test_comma_3(self, raise_error):
 		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values """
 
-		ruleset = crontimesequence.parse_cronstring_weekday( ",".join([str(v) for v in range(-3, 90)]) )
+		ruleset = crontimesequence.parse_cronstring_weekday( ",".join([str(v) for v in range(-3, 90)]) , raise_error=raise_error)
 		self.assertEqual(len(ruleset), 8)
 
 		is_rule_dateset_compatible(self, ruleset, [datetime.datetime(2012, 7, i, 9, 39) for i in range(1, 32)], True)
+	# --- def _test_comma_3
+	def test_comma_3_DEx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Disabled Exception Raising) """
+		self._test_comma_3(False)
+	def test_comma_3_REx(self):
+		""" check if the generated rule set of "X,Y,Z" have correct rule items and can accept all possible values  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_comma_3, True)
 	# ### def test_comma_3
 
-	def test_last_weekday_1(self):
+	def _test_last_weekday_1(self, raise_error):
 		""" check if the generated rule set of "xL" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3L")
+		ruleset = crontimesequence.parse_cronstring_weekday("3L", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		delta_7_day = datetime.timedelta(days=7)
@@ -1569,26 +2319,49 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_last_weekday_1
+	def test_last_weekday_1_DEx(self):
+		""" check if the generated rule set of "xL" have correct rule items  (Disabled Exception Raising) """
+		self._test_last_weekday_1(False)
+	def test_last_weekday_1_REx(self):
+		""" check if the generated rule set of "xL" have correct rule items  (Enabled Exception Raising) """
+		self._test_last_weekday_1(True)
+		# self.assertRaises(ValueError, self._test_last_weekday_1, True)
 	# ### def test_last_weekday_1
 
-	def test_last_weekday_2(self):
+	def _test_last_weekday_2(self, raise_error):
 		""" check if can correctly handle "errL" where error is not integer """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("aL")
+		ruleset = crontimesequence.parse_cronstring_weekday("aL", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_last_weekday_2
+	def test_last_weekday_2_DEx(self):
+		""" check if can correctly handle "errL" where error is not integer  (Disabled Exception Raising) """
+		self._test_last_weekday_2(False)
+	def test_last_weekday_2_REx(self):
+		""" check if can correctly handle "errL" where error is not integer  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_last_weekday_2, True)
 	# ### def test_last_weekday_2
 
-	def test_last_weekday_3(self):
+	def _test_last_weekday_3(self, raise_error):
 		""" check if can correctly handle "errL" where error out of range """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("9L")
+		ruleset = crontimesequence.parse_cronstring_weekday("9L", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_last_weekday_3
+	def test_last_weekday_3_DEx(self):
+		""" check if can correctly handle "errL" where error out of range  (Disabled Exception Raising) """
+		self._test_last_weekday_3(False)
+	def test_last_weekday_3_REx(self):
+		""" check if can correctly handle "errL" where error out of range  (Enabled Exception Raising) """
+		self._test_last_weekday_3(True)
+		# self.assertRaises(ValueError, self._test_last_weekday_3, True)
 	# ### def test_last_weekday_3
 
-	def test_nth_weekday_1(self):
+	def _test_nth_weekday_1(self, raise_error):
 		""" check if the generated rule set of "x#n" have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3#2")
+		ruleset = crontimesequence.parse_cronstring_weekday("3#2", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1605,40 +2378,78 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_nth_weekday_1
+	def test_nth_weekday_1_DEx(self):
+		""" check if the generated rule set of "x#n" have correct rule items  (Disabled Exception Raising) """
+		self._test_nth_weekday_1(False)
+	def test_nth_weekday_1_REx(self):
+		""" check if the generated rule set of "x#n" have correct rule items  (Enabled Exception Raising) """
+		self._test_nth_weekday_1(True)
+		# self.assertRaises(ValueError, self._test_nth_weekday_1, True)
 	# ### def test_nth_weekday_1
 
-	def test_nth_weekday_2(self):
+	def _test_nth_weekday_2(self, raise_error):
 		""" check if can correctly handle "err#n" where err is not integer """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("a#2")
+		ruleset = crontimesequence.parse_cronstring_weekday("a#2", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nth_weekday_2
+	def test_nth_weekday_2_DEx(self):
+		""" check if can correctly handle "err#n" where err is not integer  (Disabled Exception Raising) """
+		self._test_nth_weekday_2(False)
+	def test_nth_weekday_2_REx(self):
+		""" check if can correctly handle "err#n" where err is not integer  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_nth_weekday_2, True)
 	# ### def test_nth_weekday_2
 
-	def test_nth_weekday_3(self):
+	def _test_nth_weekday_3(self, raise_error):
 		""" check if can correctly handle "x#err" where err is not integer """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3#b")
+		ruleset = crontimesequence.parse_cronstring_weekday("3#b", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nth_weekday_3
+	def test_nth_weekday_3_DEx(self):
+		""" check if can correctly handle "x#err" where err is not integer  (Disabled Exception Raising) """
+		self._test_nth_weekday_3(False)
+	def test_nth_weekday_3_REx(self):
+		""" check if can correctly handle "x#err" where err is not integer  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_nth_weekday_3, True)
 	# ### def test_nth_weekday_3
 
-	def test_nth_weekday_4(self):
+	def _test_nth_weekday_4(self, raise_error):
 		""" check if can correctly handle "err#n" where err out of range """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("9#2")
+		ruleset = crontimesequence.parse_cronstring_weekday("9#2", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nth_weekday_4
+	def test_nth_weekday_4_DEx(self):
+		""" check if can correctly handle "err#n" where err out of range  (Disabled Exception Raising) """
+		self._test_nth_weekday_4(False)
+	def test_nth_weekday_4_REx(self):
+		""" check if can correctly handle "err#n" where err out of range  (Enabled Exception Raising) """
+		self._test_nth_weekday_4(True)
+		# self.assertRaises(ValueError, self._test_nth_weekday_4, True)
 	# ### def test_nth_weekday_4
 
-	def test_nth_weekday_5(self):
+	def _test_nth_weekday_5(self, raise_error):
 		""" check if can correctly handle "x#err" where err out of range """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("3#9")
+		ruleset = crontimesequence.parse_cronstring_weekday("3#9", raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_nth_weekday_5
+	def test_nth_weekday_5_DEx(self):
+		""" check if can correctly handle "x#err" where err out of range  (Disabled Exception Raising) """
+		self._test_nth_weekday_5(False)
+	def test_nth_weekday_5_REx(self):
+		""" check if can correctly handle "x#err" where err out of range  (Enabled Exception Raising) """
+		self._test_nth_weekday_5(True)
+		# self.assertRaises(ValueError, self._test_nth_weekday_5, True)
 	# ### def test_nth_weekday_5
 
-	def test_hybrid(self):
+	def _test_hybrid(self, raise_error):
 		""" check if the generated rule set with hybrid syntax have correct rule items """
 
-		ruleset = crontimesequence.parse_cronstring_weekday("*/9, 5-15/2, 10,11, 2L,12, 17-23/3, 28-32,2#3 ,")
+		ruleset = crontimesequence.parse_cronstring_weekday("*/9, 5-15/2, 10,11, 2L,12, 17-23/3, 28-32,2#3 ,", raise_error=raise_error)
 
 		positive_dateset = []
 		negative_dateset = []
@@ -1651,12 +2462,19 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				negative_dateset.append(d)
 		is_rule_dateset_compatible(self, ruleset, positive_dateset, True)
 		is_rule_dateset_compatible(self, ruleset, negative_dateset, False)
+	# --- def _test_hybrid
+	def test_hybrid_DEx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Disabled Exception Raising) """
+		self._test_hybrid(False)
+	def test_hybrid_REx(self):
+		""" check if the generated rule set with hybrid syntax have correct rule items  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_hybrid, True)
 	# ### def test_hybrid
 
-	def test_directfeed_1(self):
+	def _test_directfeed_1(self, raise_error):
 		""" check if the parser can work correctly with directly feed integer """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(6)
+		ruleset = crontimesequence.parse_cronstring_weekday(6, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1670,12 +2488,20 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_1
+	def test_directfeed_1_DEx(self):
+		""" check if the parser can work correctly with directly feed integer  (Disabled Exception Raising) """
+		self._test_directfeed_1(False)
+	def test_directfeed_1_REx(self):
+		""" check if the parser can work correctly with directly feed integer  (Enabled Exception Raising) """
+		self._test_directfeed_1(True)
+		# self.assertRaises(ValueError, self._test_directfeed_1, True)
 	# ### def test_directfeed_1
 
-	def test_directfeed_2(self):
+	def _test_directfeed_2(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value True """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(True)
+		ruleset = crontimesequence.parse_cronstring_weekday(True, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1689,12 +2515,19 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_2
+	def test_directfeed_2_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Disabled Exception Raising) """
+		self._test_directfeed_2(False)
+	def test_directfeed_2_REx(self):
+		""" check if the parser can work correctly with directly feed bool value True  (Enabled Exception Raising) """
+		self._test_directfeed_2(True)
 	# ### def test_directfeed_2
 
-	def test_directfeed_3(self):
+	def _test_directfeed_3(self, raise_error):
 		""" check if the parser can work correctly with directly feed bool value False """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(False)
+		ruleset = crontimesequence.parse_cronstring_weekday(False, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 1)
 
 		test_candidate_positive = []
@@ -1708,12 +2541,19 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_3
+	def test_directfeed_3_DEx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Disabled Exception Raising) """
+		self._test_directfeed_3(False)
+	def test_directfeed_3_REx(self):
+		""" check if the parser can work correctly with directly feed bool value False  (Enabled Exception Raising) """
+		self._test_directfeed_3(True)
 	# ### def test_directfeed_3
 
-	def test_directfeed_4(self):
+	def _test_directfeed_4(self, raise_error):
 		""" check if the parser can work correctly with directly feed negative range start """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(-3, 2)
+		ruleset = crontimesequence.parse_cronstring_weekday(-3, 2, raise_error=raise_error)
 		self.assertEqual(len(ruleset), 3)
 
 		test_candidate_positive = []
@@ -1727,13 +2567,27 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 				test_candidate_negative.append(candidate_val)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_positive, True)
 		is_rule_dateset_compatible(self, ruleset, test_candidate_negative, False)
+	# --- def _test_directfeed_4
+	def test_directfeed_4_DEx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Disabled Exception Raising) """
+		self._test_directfeed_4(False)
+	def test_directfeed_4_REx(self):
+		""" check if the parser can work correctly with directly feed negative range start  (Enabled Exception Raising) """
+		self._test_directfeed_4(True)
 	# ### def test_directfeed_4
 
-	def test_directfeed_5(self):
+	def _test_directfeed_5(self, raise_error):
 		""" check if the parser can work correctly with directly feed alphabet as range end """
 
-		ruleset = crontimesequence.parse_cronstring_weekday(-3, 'abc')
+		ruleset = crontimesequence.parse_cronstring_weekday(-3, 'abc', raise_error=raise_error)
 		self.assertEqual(len(ruleset), 0)
+	# --- def _test_directfeed_5
+	def test_directfeed_5_DEx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Disabled Exception Raising) """
+		self._test_directfeed_5(False)
+	def test_directfeed_5_REx(self):
+		""" check if the parser can work correctly with directly feed alphabet as range end  (Enabled Exception Raising) """
+		self.assertRaises(ValueError, self._test_directfeed_5, True)
 	# ### def test_directfeed_5
 # ### class Test_parse_cronstring_weekday
 
