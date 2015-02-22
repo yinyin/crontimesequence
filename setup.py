@@ -1,15 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 from distutils.core import setup
 
 
 
-PACKAGE_FOLDER = 'lib2'
+# {{{ select package code folder
+if sys.version_info.major > 2:
+	PACKAGE_FOLDER = 'lib3'
+else:
+	PACKAGE_FOLDER = 'lib2'
+# }}} select package code folder
 
 
 setup(name='CronTimeSequence',
-		version='1.00',
+		version='1.1.0',
 		description='Generating datetime-sequence with crontab syntax in given datetime range',
 		py_modules=['crontimesequence', ],
 		package_dir={'': PACKAGE_FOLDER},
@@ -17,7 +23,12 @@ setup(name='CronTimeSequence',
 			'Intended Audience :: Developers',
 			'License :: OSI Approved :: MIT License',
 			'Programming Language :: Python :: 2.6',
-			'Programming Language :: Python :: 2.7', ],
+			'Programming Language :: Python :: 2.7',
+			'Programming Language :: Python :: 3.0',
+			'Programming Language :: Python :: 3.1',
+			'Programming Language :: Python :: 3.2',
+			'Programming Language :: Python :: 3.3',
+			'Programming Language :: Python :: 3.4', ],
 		license='MIT License',
 	)
 
