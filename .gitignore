@@ -2,6 +2,7 @@
 .DS_Store
 .coverage
 *.pyc
+__pycache__
 runtime
 
 *.pydevproject
