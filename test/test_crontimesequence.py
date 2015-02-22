@@ -27,7 +27,7 @@ class TestScalarValue(unittest.TestCase):
 
 		test_values = {"minute": 16, "hour": 23, "day": 9, "month": 3}
 
-		for test_key, test_val in test_values.iteritems():
+		for test_key, test_val in test_values.items():
 			test_rule_obj = crontimesequence.ScalarValue(test_val, test_key)
 
 			for minute in range(0, 60):
