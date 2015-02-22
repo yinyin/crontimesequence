@@ -3,7 +3,6 @@
 
 """ build time sequence with cron syntax """
 
-import re
 import datetime
 import logging
 _log = logging.getLogger(__name__)
@@ -208,34 +207,36 @@ class NthWeekdayOfMonthValue(CronRule):
 
 
 
-def _parse_cronstring_common(v, subparser):
+def _parse_cronstring_common(v, subparser, raise_error=False):
 	if not isinstance(v, basestring):
 		return None
 	elif ',' in v:
 		vseq = v.split(',')
 		result = []
 		for ele in vseq:
-			result.extend( subparser(ele.strip()) )
+			result.extend(subparser(ele.strip(), raise_error=raise_error))
 		return result
 	elif '/' in v:
 		parted = v.split('/')
-		vseq = subparser( parted[0].strip() )
+		vseq = subparser(parted[0].strip(), raise_error=raise_error)
 		try:
 			vstep = int(parted[1].strip())
 			return [vseq[idx] for idx in xrange(0, len(vseq), vstep)]
 		except Exception as e:
 			_log.error("Syntax Error: cannot parse step value to integer (token=%r>%r, e=%r)", v, parted, e)
+			if raise_error:
+				raise
 			return vseq
 	elif '-' in v:
 		parted = v.split('-')
-		return subparser(parted[0].strip(), parted[1].strip())
+		return subparser(parted[0].strip(), parted[1].strip(), raise_error=raise_error)
 
 	return None
 # ### def _parse_cronstring_common
 
 
-def parse_cronstring_minute(vL, vT=None):
-	result = _parse_cronstring_common(vL, parse_cronstring_minute)
+def parse_cronstring_minute(vL, vT=None, raise_error=False):
+	result = _parse_cronstring_common(vL, parse_cronstring_minute, raise_error)
 
 	if result is None:
 		if vT is not None:
@@ -249,6 +250,8 @@ def parse_cronstring_minute(vL, vT=None):
 				return [ScalarValue(velem, 'minute') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				if raise_error:
+					raise
 		elif '*' == vL:
 			return parse_cronstring_minute(0, 59)
 		else:
@@ -258,13 +261,15 @@ def parse_cronstring_minute(vL, vT=None):
 					return (ScalarValue(vv, 'minute'),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		return ()
 	else:
 		return result
 # ### def parse_cronstring_minute
 
-def parse_cronstring_hour(vL, vT=None):
-	result = _parse_cronstring_common(vL, parse_cronstring_hour)
+def parse_cronstring_hour(vL, vT=None, raise_error=False):
+	result = _parse_cronstring_common(vL, parse_cronstring_hour, raise_error)
 
 	if result is None:
 		if vT is not None:
@@ -278,6 +283,8 @@ def parse_cronstring_hour(vL, vT=None):
 				return [ScalarValue(velem, 'hour') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				if raise_error:
+					raise
 		elif '*' == vL:
 			return parse_cronstring_hour(0, 23)
 		else:
@@ -287,13 +294,15 @@ def parse_cronstring_hour(vL, vT=None):
 					return (ScalarValue(vv, 'hour'),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		return ()
 	else:
 		return result
 # ### def parse_cronstring_hour
 
-def parse_cronstring_day(vL, vT=None):
-	result = _parse_cronstring_common(vL, parse_cronstring_day)
+def parse_cronstring_day(vL, vT=None, raise_error=False):
+	result = _parse_cronstring_common(vL, parse_cronstring_day, raise_error)
 
 	if result is None:
 		if vT is not None:
@@ -307,6 +316,8 @@ def parse_cronstring_day(vL, vT=None):
 				return [ScalarValue(velem, 'day') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				if raise_error:
+					raise
 		elif '*' == vL:
 			return parse_cronstring_day(1, 31)
 		elif 'L' == vL:
@@ -318,6 +329,8 @@ def parse_cronstring_day(vL, vT=None):
 					return (NearestWorkDayValue(nv),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r, rule=W)", vL)
+				if raise_error:
+					raise
 		else:
 			try:
 				vv = int(vL)
@@ -325,13 +338,15 @@ def parse_cronstring_day(vL, vT=None):
 					return (ScalarValue(vv, 'day'),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		return ()
 	else:
 		return result
 # ### def parse_cronstring_day
 
-def parse_cronstring_month(vL, vT=None):
-	result = _parse_cronstring_common(vL, parse_cronstring_month)
+def parse_cronstring_month(vL, vT=None, raise_error=False):
+	result = _parse_cronstring_common(vL, parse_cronstring_month, raise_error)
 
 	if result is None:
 		if vT is not None:
@@ -345,6 +360,8 @@ def parse_cronstring_month(vL, vT=None):
 				return [ScalarValue(velem, 'month') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				if raise_error:
+					raise
 		elif '*' == vL:
 			return parse_cronstring_month(1, 12)
 		else:
@@ -354,13 +371,15 @@ def parse_cronstring_month(vL, vT=None):
 					return (ScalarValue(vv, 'month'),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		return ()
 	else:
 		return result
 # ### def parse_cronstring_month
 
-def parse_cronstring_weekday(vL, vT=None):
-	result = _parse_cronstring_common(vL, parse_cronstring_weekday)
+def parse_cronstring_weekday(vL, vT=None, raise_error=False):
+	result = _parse_cronstring_common(vL, parse_cronstring_weekday, raise_error)
 
 	if result is None:
 		if vT is not None:
@@ -374,6 +393,8 @@ def parse_cronstring_weekday(vL, vT=None):
 				return [ScalarValue(velem, 'weekday') for velem in xrange(bL, bR)]
 			except:
 				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				if raise_error:
+					raise
 		elif '*' == vL:
 			return parse_cronstring_weekday(1, 7)
 		elif isinstance(vL, basestring) and (2 == len(vL)) and ('L' == vL[1]):
@@ -383,6 +404,8 @@ def parse_cronstring_weekday(vL, vT=None):
 					return (LastWeekdayOfMonthValue(ww),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		elif isinstance(vL, basestring) and (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
@@ -391,6 +414,8 @@ def parse_cronstring_weekday(vL, vT=None):
 					return (NthWeekdayOfMonthValue(ww, nth),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		else:
 			try:
 				vv = int(vL)
@@ -398,38 +423,43 @@ def parse_cronstring_weekday(vL, vT=None):
 					return (ScalarValue(vv, 'weekday'),)
 			except:
 				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
+				if raise_error:
+					raise
 		return ()
 	else:
 		return result
 # ### def parse_cronstring_weekday
 
 
-def __parse_cronstring_impl(rulestring, ruleparsefunc):
+def __parse_cronstring_impl(rulestring, ruleparsefunc, raise_error):
 	try:
 		rulestring = str(rulestring).strip()
 		if "*" == rulestring:
 			return None
 		else:
-			return ruleparsefunc(rulestring)
+			return ruleparsefunc(rulestring, raise_error=raise_error)
 	except Exception as e:
 		_log.exception("Err: cannot load rule %r: %r", rulestring, e)
+		if raise_error:
+			raise
 		return None
 # ### def __parse_cronstring_impl
 
-def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday):
+def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, raise_error=False):
 	""" parsing given cron-rule-string and result array of rule set
 
 	Parameter:
 		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
+		raise_error=False - do not raise exception on wrong syntax (still sending error message to logging module)
 	Return:
 		5 element tuple which consists rule set for minute, hour, day, month, weekday respectively
 		the element would be None if there is no restriction
 	"""
-	rs_minute = __parse_cronstring_impl(rule_minute, parse_cronstring_minute)
-	rs_hour = __parse_cronstring_impl(rule_hour, parse_cronstring_hour)
-	rs_day = __parse_cronstring_impl(rule_day, parse_cronstring_day)
-	rs_month = __parse_cronstring_impl(rule_month, parse_cronstring_month)
-	rs_weekday = __parse_cronstring_impl(rule_weekday, parse_cronstring_weekday)
+	rs_minute = __parse_cronstring_impl(rule_minute, parse_cronstring_minute, raise_error)
+	rs_hour = __parse_cronstring_impl(rule_hour, parse_cronstring_hour, raise_error)
+	rs_day = __parse_cronstring_impl(rule_day, parse_cronstring_day, raise_error)
+	rs_month = __parse_cronstring_impl(rule_month, parse_cronstring_month, raise_error)
+	rs_weekday = __parse_cronstring_impl(rule_weekday, parse_cronstring_weekday, raise_error)
 
 	return (rs_minute, rs_hour, rs_day, rs_month, rs_weekday,)
 # ### def parse_cronstring
@@ -491,17 +521,18 @@ def filter_range_by_rule(rulearray, tstamp_start, tstamp_end):
 # ### def filter_range_by_rule
 
 
-def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, tstamp_start, tstamp_end):
+def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, tstamp_start, tstamp_end, raise_error=False):
 	""" filter given time-stamp range with given rules
 
 	Parameter:
 		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
 		tstamp_start - range start (inclusive)
 		tstamp_end - range end (exclusive)
+		raise_error=False - do not raise exception on wrong syntax (still sending error message to logging module)
 	Return:
 		list of datetime object which complies to given rule array
 	"""
-	rulearray = parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
+	rulearray = parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, raise_error)
 	return filter_range_by_rule(rulearray, tstamp_start, tstamp_end)
 # ### def get_datetime_by_cronrule
 
