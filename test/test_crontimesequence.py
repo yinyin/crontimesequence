@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 # -*- coding: utf-8 -*-
 
 import unittest
@@ -7,7 +6,7 @@ import sys
 import datetime
 import logging
 
-sys.path.append('lib')
+sys.path.append('lib2')
 
 import crontimesequence
 
