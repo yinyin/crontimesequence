@@ -9,25 +9,26 @@ import logging
 _log = logging.getLogger(__name__)
 
 
+
 class CronRule(object):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to be check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		return False
 	# ### def is_accept
 # ### class CronRule
+
 
 class ScalarValue(CronRule):
 	def __init__(self, v, fieldname):
 		""" constructor of scalar value check rule.
 
-		Argument:
+		Parameter:
 			v - the value for comparison
 			fieldname - the datetime component to be check (one of 'minute', 'hour', 'day', 'month', 'weekday')
 		"""
@@ -38,12 +39,11 @@ class ScalarValue(CronRule):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		if 'weekday' == self.fieldname:
 			if 0 == self.v:
 				self.v = 7	# reset to ISO calendar
@@ -51,7 +51,6 @@ class ScalarValue(CronRule):
 				return False
 		elif getattr(d, self.fieldname) != self.v:
 			return False
-
 		return True
 	# ### def is_accept
 
@@ -59,6 +58,7 @@ class ScalarValue(CronRule):
 		return "%s.ScalarValue(%d, \"%s\")" % (self.__module__, self.v, self.fieldname,)
 	# ### def __repr__
 # ### class ScalarValue
+
 
 class LastDayOfMonthValue(CronRule):
 	def __init__(self):
@@ -70,17 +70,14 @@ class LastDayOfMonthValue(CronRule):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		aux = d + datetime.timedelta(days=1)
-
 		if 1 == aux.day:
 			return True
-
 		return False
 	# ### def is_accept
 
@@ -105,12 +102,11 @@ class NearestWorkDayValue(CronRule):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		d_wd = d.isoweekday()
 		d_date = d.date()
 
@@ -148,6 +144,7 @@ class NearestWorkDayValue(CronRule):
 	# ### def __repr__
 # ### class NearestWorkDayValue
 
+
 class LastWeekdayOfMonthValue(CronRule):
 	def __init__(self, v):
 		""" constructor of last week day of month check rule.
@@ -160,17 +157,15 @@ class LastWeekdayOfMonthValue(CronRule):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		if d.isoweekday() == self.exp_weekday:
 			aux = d + datetime.timedelta(days=7)
 			if aux.month != d.month:
 				return True
-
 		return False
 	# ### def is_accept
 
@@ -178,6 +173,7 @@ class LastWeekdayOfMonthValue(CronRule):
 		return "%s.LastWeekdayOfMonthValue(%d)" % (self.__module__, self.exp_weekday,)
 	# ### def __repr__
 # ### class LastWeekdayOfMonthValue
+
 
 class NthWeekdayOfMonthValue(CronRule):
 	def __init__(self, v, nth):
@@ -192,18 +188,16 @@ class NthWeekdayOfMonthValue(CronRule):
 	def is_accept(self, d):
 		""" test is the given datetime object d complied with the rule set in this object.
 
-		Argument:
+		Parameter:
 			d - the datetime object to check
 		Return:
 			True if given object is complied, False otherwise.
 		"""
-
 		if d.isoweekday() == self.exp_weekday:
 			aux_0 = d - datetime.timedelta(days=(7*self.exp_nth))
 			aux_1 = d - datetime.timedelta(days=(7*(self.exp_nth-1)))
 			if (aux_0.month != d.month) and (aux_1.month == d.month):
 				return True
-
 		return False
 	# ### def is_accept
 
@@ -211,7 +205,6 @@ class NthWeekdayOfMonthValue(CronRule):
 		return "%s.NthWeekdayOfMonthValue(%d, %d)" % (self.__module__, self.exp_weekday, self.exp_nth,)
 	# ### def __repr__
 # ### class NthWeekdayOfMonthValue
-
 
 
 
@@ -231,7 +224,7 @@ def _parse_cronstring_common(v, subparser):
 			vstep = int(parted[1].strip())
 			return [vseq[idx] for idx in range(0, len(vseq), vstep)]
 		except Exception as e:
-			_log.error("Syntax Err: cannot parse step value to integer (token=%r>%r, e=%r)", v, parted, e)
+			_log.error("Syntax Error: cannot parse step value to integer (token=%r>%r, e=%r)", v, parted, e)
 			return vseq
 	elif '-' in v:
 		parted = v.split('-')
@@ -255,7 +248,7 @@ def parse_cronstring_minute(vL, vT=None):
 					bR = 60
 				return [ScalarValue(velem, 'minute') for velem in range(bL, bR)]
 			except:
-				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_minute(0, 59)
 		else:
@@ -264,7 +257,7 @@ def parse_cronstring_minute(vL, vT=None):
 				if (vv >= 0) and (vv <= 59):
 					return (ScalarValue(vv, 'minute'),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -284,7 +277,7 @@ def parse_cronstring_hour(vL, vT=None):
 					bR = 24
 				return [ScalarValue(velem, 'hour') for velem in range(bL, bR)]
 			except:
-				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_hour(0, 23)
 		else:
@@ -293,7 +286,7 @@ def parse_cronstring_hour(vL, vT=None):
 				if (vv >= 0) and (vv <= 23):
 					return (ScalarValue(vv, 'hour'),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -313,7 +306,7 @@ def parse_cronstring_day(vL, vT=None):
 					bR = 32
 				return [ScalarValue(velem, 'day') for velem in range(bL, bR)]
 			except:
-				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_day(1, 31)
 		elif 'L' == vL:
@@ -324,14 +317,14 @@ def parse_cronstring_day(vL, vT=None):
 				if (nv >= 1) and (nv <= 31):
 					return (NearestWorkDayValue(nv),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r, rule=W)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r, rule=W)", vL)
 		else:
 			try:
 				vv = int(vL)
 				if (vv >= 1) and (vv <= 31):
 					return (ScalarValue(vv, 'day'),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -351,7 +344,7 @@ def parse_cronstring_month(vL, vT=None):
 					bR = 13
 				return [ScalarValue(velem, 'month') for velem in range(bL, bR)]
 			except:
-				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_month(1, 12)
 		else:
@@ -360,7 +353,7 @@ def parse_cronstring_month(vL, vT=None):
 				if (vv >= 1) and (vv <= 12):
 					return (ScalarValue(vv, 'month'),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -380,7 +373,7 @@ def parse_cronstring_weekday(vL, vT=None):
 					bR = 8
 				return [ScalarValue(velem, 'weekday') for velem in range(bL, bR)]
 			except:
-				_log.error("Syntax Err: cannot convert one or both of range value (token=%r-%r)", vL, vT)
+				_log.error("Syntax Error: cannot convert one or both of range value (token=%r-%r)", vL, vT)
 		elif '*' == vL:
 			return parse_cronstring_weekday(1, 7)
 		elif isinstance(vL, (str, unicode,)) and (2 == len(vL)) and ('L' == vL[1]):
@@ -389,7 +382,7 @@ def parse_cronstring_weekday(vL, vT=None):
 				if (ww >= 0) and (ww <= 7):
 					return (LastWeekdayOfMonthValue(ww),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		elif isinstance(vL, (str, unicode,)) and (3 == len(vL)) and ('#' == vL[1]):
 			try:
 				ww = int(vL[0])
@@ -397,14 +390,14 @@ def parse_cronstring_weekday(vL, vT=None):
 				if (ww >= 0) and (ww <= 7) and (nth >= 1) and (nth <= 5):
 					return (NthWeekdayOfMonthValue(ww, nth),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		else:
 			try:
 				vv = int(vL)
 				if (vv >= 0) and (vv <= 7):
 					return (ScalarValue(vv, 'weekday'),)
 			except:
-				_log.error("Syntax Err: cannot convert value (token=%r)", vL)
+				_log.error("Syntax Error: cannot convert value (token=%r)", vL)
 		return ()
 	else:
 		return result
@@ -426,13 +419,12 @@ def __parse_cronstring_impl(rulestring, ruleparsefunc):
 def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday):
 	""" parsing given cron-rule-string and result array of rule set
 
-	Argument:
+	Parameter:
 		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
 	Return:
 		5 element tuple which consists rule set for minute, hour, day, month, weekday respectively
 		the element would be None if there is no restriction
 	"""
-
 	rs_minute = __parse_cronstring_impl(rule_minute, parse_cronstring_minute)
 	rs_hour = __parse_cronstring_impl(rule_hour, parse_cronstring_hour)
 	rs_day = __parse_cronstring_impl(rule_day, parse_cronstring_day)
@@ -444,15 +436,14 @@ def parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
 
 
 def check_timestamp_by_rule(rulearray, tstamp):
-	""" check if given timestamp is comply to the given rule array
+	""" check if given time-stamp is comply to the given rule array
 
-	Argument:
+	Parameter:
 		rulearray - rule array generated by parse_cronstring
-		tstamp - timestamp to be check
+		tstamp - time-stamp to be check
 	Return:
-		True if given timestamp complied, False otherwise
+		True if given time-stamp complied, False otherwise
 	"""
-
 	complied = 0
 
 	# {{{ check if timestamp is accept by rule array
@@ -477,16 +468,15 @@ def check_timestamp_by_rule(rulearray, tstamp):
 # ### def check_timestamp_by_rule
 
 def filter_range_by_rule(rulearray, tstamp_start, tstamp_end):
-	""" filter timestamps within given range by given rule array
+	""" filter time-stamps within given range by given rule array
 
-	Argument:
+	Parameter:
 		rulearray - rule array generated by parse_cronstring
 		tstamp_start - range start (inclusive)
 		tstamp_end - range end (exclusive)
 	Return:
 		list of datetime object which complies to given rule array
 	"""
-
 	increment_delta = datetime.timedelta(minutes=1)
 	d = datetime.datetime(tstamp_start.year, tstamp_start.month, tstamp_start.day, tstamp_start.hour, tstamp_start.minute)
 
@@ -505,14 +495,13 @@ def filter_range_by_rule(rulearray, tstamp_start, tstamp_end):
 def get_datetime_by_cronrule(rule_minute, rule_hour, rule_day, rule_month, rule_weekday, tstamp_start, tstamp_end):
 	""" filter given time-stamp range with given rules
 
-	Argument:
+	Parameter:
 		rule_minute, rule_hour, rule_day, rule_month, rule_weekday - cron-style rule string
 		tstamp_start - range start (inclusive)
 		tstamp_end - range end (exclusive)
 	Return:
 		list of datetime object which complies to given rule array
 	"""
-
 	rulearray = parse_cronstring(rule_minute, rule_hour, rule_day, rule_month, rule_weekday)
 	return filter_range_by_rule(rulearray, tstamp_start, tstamp_end)
 # ### def get_datetime_by_cronrule
