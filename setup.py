@@ -14,8 +14,8 @@ else:
 # }}} select package code folder
 
 
-setup(name='CronTimeSequence',
-		version='1.1.0',
+setup(name='crontimesequence',
+		version='1.1.1',
 		description='Generating datetime-sequence with crontab syntax in given datetime range',
 		py_modules=['crontimesequence', ],
 		package_dir={'': PACKAGE_FOLDER},
