@@ -22,4 +22,9 @@ local.properties
 .project
 .externalToolBuilders/
 *.launch
+.vscode/
+.env
+
+.rt-deps/
+.rt-sandbox/
 
