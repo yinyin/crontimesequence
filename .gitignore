@@ -28,3 +28,6 @@ local.properties
 .rt-deps/
 .rt-sandbox/
 
+MANIFEST
+dist/
+
