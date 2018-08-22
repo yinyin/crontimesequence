@@ -1,0 +1,2 @@
+include lib2/*.py 
+include lib3/*.py 
