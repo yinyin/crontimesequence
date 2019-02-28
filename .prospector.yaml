@@ -4,11 +4,19 @@ ignore-paths:
   - dist
   - docs
   - etc
+  - lib2
 
 pylint:
   disable:
     - keyword-arg-before-vararg
+  options:
+    max-branches: 16
+    max-args: 8
 
 pep8:
   disable:
     - E131
+
+mccabe:
+  options:
+    max-complexity: 23
