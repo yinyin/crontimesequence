@@ -1,0 +1,14 @@
+autodetect: false
+
+ignore-paths:
+  - dist
+  - docs
+  - etc
+
+pylint:
+  disable:
+    - keyword-arg-before-vararg
+
+pep8:
+  disable:
+    - E131
