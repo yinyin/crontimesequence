@@ -9,7 +9,7 @@ import logging
 # {{{ import target module according to Python version
 try:
 	import crontimesequence #@UnusedImport
-except:
+except Exception:
 	if sys.version_info.major > 2:
 		sys.path.append('lib3')
 	else:
@@ -27,7 +27,7 @@ class TestScalarValue(unittest.TestCase):
 
 		test_values = {"minute": 16, "hour": 23, "day": 9, "month": 3}
 
-		for test_key, test_val in test_values.items():
+		for test_key, test_val in test_values.items(): # pylint: disable=too-many-nested-blocks
 			test_rule_obj = crontimesequence.ScalarValue(test_val, test_key)
 
 			for minute in range(0, 60):
@@ -38,10 +38,11 @@ class TestScalarValue(unittest.TestCase):
 
 							ret = test_rule_obj.is_accept(test_subj)
 
-							if ( (("minute" == test_key) and (16 == minute))
-									or (("hour" == test_key) and (23 == hour))
-									or (("day" == test_key) and (9 == day))
-									or (("month" == test_key) and (3 == month)) ):
+							# pylint: disable=too-many-boolean-expressions
+							if ( ((test_key == "minute") and (minute == 16 ))
+								or ((test_key == "hour") and (hour == 23))
+								or ((test_key == "day") and (day == 9 ))
+								or ((test_key == "month") and (month == 3)) ):
 								self.assertTrue(ret)
 							else:
 								self.assertFalse(ret)
@@ -52,7 +53,7 @@ class TestScalarValue(unittest.TestCase):
 
 		test_rule_set = [crontimesequence.ScalarValue(wdv, "weekday") for wdv in range(0, 8)]
 
-		for minute in range(0, 60):
+		for minute in range(0, 60): # pylint: disable=too-many-nested-blocks
 			for hour in range(0, 24):
 				for day in range(1, 30):
 					for month in range(1, 13):
@@ -62,7 +63,7 @@ class TestScalarValue(unittest.TestCase):
 							ret = test_rule_set[wdv].is_accept(test_subj)
 
 							w = test_subj.isoweekday()
-							if (w == wdv) or ( ((0 == w) or (7 == w)) and ((0 == wdv) or (7 == wdv)) ):
+							if (w == wdv) or ( (w in (0, 7)) and (0 == wdv in (0, 7)) ):
 								self.assertTrue(ret)
 							else:
 								self.assertFalse(ret)
@@ -94,7 +95,7 @@ class TestLastDayOfMonthValue(unittest.TestCase):
 			ret = test_rule_obj.is_accept(test_subj)
 
 			is_last_month = False
-			if ((12 == test_subj.month) and (1 == tomorrow.month)) or (((1 + test_subj.month) == tomorrow.month) and (tomorrow.month <= 12)):
+			if ((test_subj.month == 12) and (tomorrow.month == 1)) or (((1 + test_subj.month) == tomorrow.month) and (tomorrow.month <= 12)):
 				is_last_month = True
 
 			if is_last_month:
@@ -178,7 +179,7 @@ class TestLastWeekdayOfMonthValue(unittest.TestCase):
 				rolling_wd = eval_rolling.isoweekday()
 				rolling_date = eval_rolling.date()
 
-				if (last_wd_date_of_current_month is None) and ( (expweekday == rolling_wd) or ((7 == rolling_wd) and (0 == expweekday)) ):
+				if (last_wd_date_of_current_month is None) and ( (expweekday == rolling_wd) or ((rolling_wd == 7) and (expweekday == 0)) ):
 					last_wd_date_of_current_month = rolling_date
 
 				ret = rule_obj.is_accept(eval_rolling)
@@ -228,7 +229,7 @@ class TestNthWeekdayOfMonthValue(unittest.TestCase):
 					rolling_wd = eval_rolling.isoweekday()
 					rolling_date = eval_rolling.date()
 
-					if (rolling_wd == expweekday) or ((7 == rolling_wd) and (0 == expweekday)):
+					if (rolling_wd == expweekday) or ((rolling_wd == 7) and (expweekday == 0)):
 						if last_wd_matched_date != rolling_date:
 							last_wd_matched_date = rolling_date
 							wd_matched_count = wd_matched_count + 1
@@ -270,10 +271,10 @@ def is_rule_dateset_compatible(testcase, ruleset, dateset, expret, msg=None):
 		for rule in ruleset:
 			if rule.is_accept(d):
 				final_ret = True
-				if False == expret:
+				if not expret:
 					rulemark = rule
 			else:
-				if True == expret:
+				if expret:
 					rulemark = rule
 
 		if msg is None:
@@ -361,7 +362,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		for i in range(0, 60):
 			step = i
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if 0 == (step % 17):
+			if (step % 17) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -388,7 +389,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		for i in range(20, 60):
 			step = i - 20
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if 0 == (step % 3):
+			if (step % 3) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -579,7 +580,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 60):
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if 6 == i:
+			if i == 6:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -605,7 +606,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 60):
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if 1 == i:
+			if i == 1:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -631,7 +632,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 60):
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if 0 == i:
+			if i == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -657,7 +658,7 @@ class Test_parse_cronstring_minute(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 60):
 			candidate_val = datetime.datetime(2012, 6, 30, 8, i)
-			if (0 <= i) and (29 >= i):
+			if (i >= 0) and (i <= 29): # pylint: disable=chained-comparison
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -766,7 +767,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		for i in range(0, 24):
 			step = i
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if 0 == (step % 5):
+			if (step % 5) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -793,7 +794,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		for i in range(3, 20):
 			step = i - 3
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if 0 == (step % 3):
+			if (step % 3) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -984,7 +985,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 24):
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if 6 == i:
+			if i == 6:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1010,7 +1011,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 24):
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if 1 == i:
+			if i == 1:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1036,7 +1037,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 24):
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if 0 == i:
+			if i == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1062,7 +1063,7 @@ class Test_parse_cronstring_hour(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(0, 24):
 			candidate_val = datetime.datetime(2012, 6, 30, i, 39)
-			if (0 <= i) and (10 >= i):
+			if (i >= 0) and (i <= 10): # pylint: disable=chained-comparison
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1189,7 +1190,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		for i in range(1, 32):
 			step = i
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
-			if 0 == ((step-1) % 5):
+			if ((step-1) % 5) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1216,7 +1217,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		for i in range(3, 20):
 			step = i - 3
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
-			if 0 == (step % 3):
+			if (step % 3) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1381,7 +1382,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 
 		for y in range(1990, 2039):
 			month_day_count_map = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,]
-			if (0 == (y % 400)) or ( (0 != (y % 100)) and (0 == (y % 4)) ):
+			if ((y % 400) == 0) or ( ((y % 100) != 0) and ((y % 4) == 0) ):
 				month_day_count_map[2] = 29
 
 			for m in range(1, 13):
@@ -1415,7 +1416,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		negative_dateset = []
 		for i in range(1, 31):
 			d = datetime.datetime(2012, 9, i, 9, 39)
-			if 3 == i:
+			if i == 3:
 				positive_dateset.append(d)
 			else:
 				negative_dateset.append(d)
@@ -1538,7 +1539,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
-			if 6 == i:
+			if i == 6:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1564,7 +1565,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
-			if 1 == i:
+			if i == 1:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1590,7 +1591,7 @@ class Test_parse_cronstring_day(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
-			if 0 == i:
+			if i == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1703,7 +1704,7 @@ class Test_parse_cronstring_month(unittest.TestCase):
 		for i in range(1, 13):
 			step = i
 			candidate_val = datetime.datetime(2012, i, 3, 9, 39)
-			if 0 == ((step-1) % 5):
+			if ((step-1) % 5) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1730,7 +1731,7 @@ class Test_parse_cronstring_month(unittest.TestCase):
 		for i in range(3, 11):
 			step = i - 3
 			candidate_val = datetime.datetime(2012, i, 3, 9, 39)
-			if 0 == (step % 3):
+			if (step % 3) == 0:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1920,7 +1921,7 @@ class Test_parse_cronstring_month(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(1, 13):
 			candidate_val = datetime.datetime(2012, i, 3, 9, 39)
-			if 6 == i:
+			if i == 6:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -1946,7 +1947,7 @@ class Test_parse_cronstring_month(unittest.TestCase):
 		test_candidate_negative = []
 		for i in range(1, 13):
 			candidate_val = datetime.datetime(2012, i, 3, 9, 39)
-			if 1 == i:
+			if i == 1:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2018,7 +2019,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
-			if (3 <= tweekday) and (5 >= tweekday):
+			if (tweekday >= 3) and (tweekday <= 5): # pylint: disable=chained-comparison
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2321,7 +2322,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			next_week_day = candidate_val + delta_7_day
-			if (3 == candidate_val.isoweekday()) and (7 != next_week_day.month):
+			if (candidate_val.isoweekday() == 3) and (next_week_day.month != 7):
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2378,9 +2379,9 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
-			if 3 == tweekday:
+			if tweekday == 3:
 				nth_count = nth_count + 1
-			if (3 == tweekday) and (2 == nth_count):
+			if (tweekday == 3) and (nth_count == 2):
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2464,7 +2465,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			d = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = d.isoweekday()
-			if (tweekday in (1, 5, 7,)) or ( (2 == tweekday) and (i in (17, 31,)) ):
+			if (tweekday in (1, 5, 7,)) or ( (tweekday == 2) and (i in (17, 31,)) ):
 				positive_dateset.append(d)
 			else:
 				negative_dateset.append(d)
@@ -2490,7 +2491,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
-			if 6 == tweekday:
+			if tweekday == 6:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2517,7 +2518,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
-			if 1 == tweekday:
+			if tweekday == 1:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2543,7 +2544,7 @@ class Test_parse_cronstring_weekday(unittest.TestCase):
 		for i in range(1, 32):
 			candidate_val = datetime.datetime(2012, 7, i, 9, 39)
 			tweekday = candidate_val.isoweekday()
-			if 7 == tweekday:
+			if tweekday == 7:
 				test_candidate_positive.append(candidate_val)
 			else:
 				test_candidate_negative.append(candidate_val)
@@ -2674,7 +2675,7 @@ class Test_IntegratingFunction(unittest.TestCase):
 		for d in result:
 			self.assertEqual(d.second, 0)
 			self.assertEqual(d.minute, 19)
-			self.assertTrue(0 == (d.hour % 3))
+			self.assertTrue((d.hour % 3) == 0)
 
 		self.assertEqual(len(result), 20)
 	# --- def _test_every_3_hr_get_ruleset_n_filter
@@ -2709,7 +2710,7 @@ class Test_IntegratingFunction(unittest.TestCase):
 		for d in result:
 			self.assertEqual(d.second, 0)
 			self.assertEqual(d.minute, 19)
-			self.assertTrue(0 == (d.hour % 3))
+			self.assertTrue((d.hour % 3) == 0)
 
 		self.assertEqual(len(result), 20)
 	# --- def test_every_3_hr_get_sequence
